@@ -26,7 +26,7 @@ namespace Garage25.Data
                 var members = new List<Member>();
                 for (int i = 0; i < 10; i++)
                 {
-                    var userName = Faker.Name.FullName();
+                    var userName = Faker.Name.First();
                     var member = new Member
                     {
                         UserName = userName,
@@ -36,6 +36,7 @@ namespace Garage25.Data
                 }
                 context.Member.AddRange(members);
 
+                var vh = new Bogus.DataSets.Vehicle();
                 //var textInfo = new CultureInfo("en-us", false).TextInfo;
                 var vehicletypes = new List<VehicleType>();
                 for (int i = 0; i < 10; i++)
@@ -44,8 +45,8 @@ namespace Garage25.Data
                     {
                         //Type = textInfo.ToTitleCase(Faker.Company.CatchPhrase())
                         Type = VType.CAR, // TODO: Fixes with name generator
-                        Brand = "Volvo",
-                        Model = "V60",
+                        Brand = vh.Manufacturer(),
+                        Model = vh.Model(),
                         NumWheels = 4
                     };
 
@@ -62,7 +63,7 @@ namespace Garage25.Data
                         DateTime now = DateTime.Now;
                         var parkedVehicle = new ParkedVehicle
                         {
-                            RegNo = Faker.Name.First(), // TODO: fix unique reg num
+                            RegNo = vh.Vin().Substring(0,6),
                             CheckInTime = now,
                             ParkingTime = DateTime.Now - now,
                             Owner = member,
