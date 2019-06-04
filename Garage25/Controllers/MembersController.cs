@@ -39,6 +39,17 @@ namespace Garage25.Controllers
                 return NotFound();
             }
 
+            var parkedVehicles = _context.ParkedVehicle
+                .Where(p => p.OwnerId == member.Id);
+            if (parkedVehicles == null)
+            {
+                return NotFound();
+            }
+
+            int numParkedVehicles = parkedVehicles.Count();
+
+            ViewData["numparkedvehicles"] = numParkedVehicles.ToString();
+
             return View(member);
         }
 

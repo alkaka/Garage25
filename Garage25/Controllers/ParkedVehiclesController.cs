@@ -39,6 +39,24 @@ namespace Garage25.Controllers
                 return NotFound();
             }
 
+            parkedVehicle.ParkingTime = DateTime.Now - parkedVehicle.CheckInTime;
+
+            var member = await _context.Member
+                .FirstOrDefaultAsync(m => m.Id == parkedVehicle.OwnerId);
+            if (member == null)
+            {
+                return NotFound();
+            }
+            ViewData["membername"] = member.UserName;
+
+            var vehicletype = await _context.VehicleType
+                .FirstOrDefaultAsync(m => m.Id == parkedVehicle.TypeId);
+            if (vehicletype == null)
+            {
+                return NotFound();
+            }
+            ViewData["vehicletypename"] = vehicletype.Type.ToString();
+
             return View(parkedVehicle);
         }
 

@@ -5,6 +5,11 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Migrations\20190604085658_Init.cs" />
+    <Compile Remove="Migrations\20190604085658_Init.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.1" />

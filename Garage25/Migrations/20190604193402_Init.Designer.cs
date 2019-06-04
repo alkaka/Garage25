@@ -4,14 +4,16 @@ using Garage25.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Garage25.Migrations
 {
     [DbContext(typeof(Garage25Context))]
-    partial class Garage25ContextModelSnapshot : ModelSnapshot
+    [Migration("20190604193402_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,15 +44,19 @@ namespace Garage25.Migrations
 
                     b.Property<DateTime>("CheckInTime");
 
-                    b.Property<int>("OwnerId");
+                    b.Property<int?>("OwnerId");
 
                     b.Property<TimeSpan>("ParkingTime");
 
                     b.Property<string>("RegNo");
 
-                    b.Property<int>("TypeId");
+                    b.Property<int?>("TypeId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("TypeId");
 
                     b.ToTable("ParkedVehicle");
                 });
@@ -72,6 +78,17 @@ namespace Garage25.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("VehicleType");
+                });
+
+            modelBuilder.Entity("Garage25.Models.ParkedVehicle", b =>
+                {
+                    b.HasOne("Garage25.Models.Member", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+
+                    b.HasOne("Garage25.Models.VehicleType", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeId");
                 });
 #pragma warning restore 612, 618
         }
