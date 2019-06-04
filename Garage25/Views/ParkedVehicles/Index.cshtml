@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Currently parked in the garage</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,13 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RegNo)
+                Registration Number
+                @*@Html.DisplayNameFor(model => model.RegNo)*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CheckInTime)
+                Check in time
+                @*@Html.DisplayNameFor(model => model.CheckInTime)*@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParkingTime)
+                Parking time
+                @*@Html.DisplayNameFor(model => model.ParkingTime)*@
             </th>
             <th></th>
         </tr>
