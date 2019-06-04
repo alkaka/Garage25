@@ -11,5 +11,9 @@ namespace Garage25.Models
         public string RegNo { get; set; }
         public DateTime CheckInTime { get; set; }
         public TimeSpan ParkingTime { get; set; }
+
+        //Navigation properties, not in EF-database
+        public Member Owner { get; set; }
+        public VehicleType Type{ get; set; }
     }
 }

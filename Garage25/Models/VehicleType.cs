@@ -8,15 +8,16 @@ namespace Garage25.Models
     public enum VType
     {
         AIRPLANE,
-        BOAT,  //TODO: #100 Change TÅ
+        BOAT,  
         BUS,
         CAR,
         MOTORCYCLE,
         TRAIN,
-        TRUCK  //TODO: #99 Change TÅ
+        TRUCK  
     }
     public class VehicleType
     {
+        public int Id { get; set; }
         public VType Type { get; set; }
         public string Brand { get; set; }
         public string Model { get; set; }
