@@ -42,19 +42,19 @@ namespace Garage25.Migrations
 
                     b.Property<DateTime>("CheckInTime");
 
-                    b.Property<int?>("OwnerId");
+                    b.Property<int>("MemberId");
 
                     b.Property<TimeSpan>("ParkingTime");
 
                     b.Property<string>("RegNo");
 
-                    b.Property<int?>("TypeId");
+                    b.Property<int>("VehicleTypeId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("MemberId");
 
-                    b.HasIndex("TypeId");
+                    b.HasIndex("VehicleTypeId");
 
                     b.ToTable("ParkedVehicle");
                 });
@@ -80,13 +80,15 @@ namespace Garage25.Migrations
 
             modelBuilder.Entity("Garage25.Models.ParkedVehicle", b =>
                 {
-                    b.HasOne("Garage25.Models.Member", "Owner")
+                    b.HasOne("Garage25.Models.Member", "Member")
                         .WithMany()
-                        .HasForeignKey("OwnerId");
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Garage25.Models.VehicleType", "Type")
+                    b.HasOne("Garage25.Models.VehicleType", "VehicleType")
                         .WithMany()
-                        .HasForeignKey("TypeId");
+                        .HasForeignKey("VehicleTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
