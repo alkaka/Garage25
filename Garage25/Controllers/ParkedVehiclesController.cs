@@ -25,7 +25,8 @@ namespace Garage25.Controllers
         }
 
         // GET: ParkedVehicles/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> 
+            Details(int? id)
         {
             if (id == null)
             {
@@ -58,6 +59,63 @@ namespace Garage25.Controllers
             ViewData["vehicletypename"] = vehicletype.Type.ToString();
 
             return View(parkedVehicle);
+        }
+
+        // GET: ParkedVehicles/Create
+        public IActionResult CreateParkedVehicle()
+        {
+            // Add some bogus data
+            var vehicle = new Bogus.DataSets.Vehicle();
+
+            var createParkedVehicleViewModel = new CreateParkedVehicleViewModel
+            {
+                RegNo = vehicle.Vin().Substring(0, 6),
+                UserName = ""
+            };
+
+            return View(createParkedVehicleViewModel);
+        }
+
+        // POST: ParkedVehicles/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateParkedVehicle([Bind("RegNo,UserName")] CreateParkedVehicleViewModel createParkedVehicleViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var username = createParkedVehicleViewModel.UserName;
+                Member member = await _context.Member
+                                .FirstOrDefaultAsync(m => string.Equals(m.UserName, username));
+                if (member == null)
+                {
+                    return NotFound();
+                }
+
+                VehicleType vehicleType = await _context.VehicleType.FirstOrDefaultAsync();
+                if (vehicleType == null)
+                {
+                    return NotFound();
+                }
+
+                DateTime now = DateTime.Now;
+                ParkedVehicle parkedVehicle = new ParkedVehicle
+                {
+                    RegNo = createParkedVehicleViewModel.RegNo,
+                    CheckInTime = now,
+                    ParkingTime = DateTime.Now - now,
+                    MemberId = member.Id,
+                    Member = member,
+                    VehicleTypeId = vehicleType.Id,
+                    VehicleType = vehicleType
+                };
+
+                _context.Add(parkedVehicle);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(createParkedVehicleViewModel);
         }
 
         // GET: ParkedVehicles/Create

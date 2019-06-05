@@ -1,0 +1,42 @@
+﻿@model Garage25.Models.CreateParkedVehicleViewModel
+@{
+    ViewData["Title"] = "CreateParkedVehicle";
+}
+
+<h1>Create</h1>
+
+<h4>ParkedVehicle</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateParkedVehicle">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RegNo" class="control-label"></label>
+                <input asp-for="RegNo" class="form-control" />
+                <span asp-validation-for="RegNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                    <label asp-for="VehicleTypeId" class="control-label"></label>
+                    <input asp-for="VehicleTypeId" class="form-control" />
+                    <span asp-validation-for="VehicleTypeId" class="text-danger"></span>
+                </div>*@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
