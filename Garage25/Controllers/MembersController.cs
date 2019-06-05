@@ -159,5 +159,22 @@ namespace Garage25.Controllers
         {
             return _context.Member.Any(e => e.Id == id);
         }
+
+        // GET: ParkedVehicles/Basic
+        public async Task<IActionResult> MemberOverview()
+        {
+            return View(await CreateMemberViewModels().ToListAsync());
+        }
+
+        private IQueryable<MemberViewModel> CreateMemberViewModels()
+        {
+            return _context.Member
+                     .Select(m => new MemberViewModel
+                     {
+                         Id = m.Id,
+                         UserName = m.UserName,
+                         NumVehicles = 0 // TODO: count
+                     });
+        }
     }
 }
