@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage25.Migrations
 {
     [DbContext(typeof(Garage25Context))]
-    [Migration("20190604201134_Init2")]
-    partial class Init2
+    [Migration("20190605071603_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -44,15 +44,19 @@ namespace Garage25.Migrations
 
                     b.Property<DateTime>("CheckInTime");
 
-                    b.Property<int>("OwnerId");
+                    b.Property<int>("MemberId");
 
                     b.Property<TimeSpan>("ParkingTime");
 
                     b.Property<string>("RegNo");
 
-                    b.Property<int>("TypeId");
+                    b.Property<int>("VehicleTypeId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("VehicleTypeId");
 
                     b.ToTable("ParkedVehicle");
                 });
@@ -74,6 +78,19 @@ namespace Garage25.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("VehicleType");
+                });
+
+            modelBuilder.Entity("Garage25.Models.ParkedVehicle", b =>
+                {
+                    b.HasOne("Garage25.Models.Member", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Garage25.Models.VehicleType", "VehicleType")
+                        .WithMany()
+                        .HasForeignKey("VehicleTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

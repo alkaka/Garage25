@@ -42,7 +42,7 @@ namespace Garage25.Controllers
             parkedVehicle.ParkingTime = DateTime.Now - parkedVehicle.CheckInTime;
 
             var member = await _context.Member
-                .FirstOrDefaultAsync(m => m.Id == parkedVehicle.OwnerId);
+                .FirstOrDefaultAsync(m => m.Id == parkedVehicle.MemberId);
             if (member == null)
             {
                 return NotFound();
@@ -50,7 +50,7 @@ namespace Garage25.Controllers
             ViewData["membername"] = member.UserName;
 
             var vehicletype = await _context.VehicleType
-                .FirstOrDefaultAsync(m => m.Id == parkedVehicle.TypeId);
+                .FirstOrDefaultAsync(m => m.Id == parkedVehicle.VehicleTypeId);
             if (vehicletype == null)
             {
                 return NotFound();
@@ -63,7 +63,16 @@ namespace Garage25.Controllers
         // GET: ParkedVehicles/Create
         public IActionResult Create()
         {
-            return View();
+            // Add some bogus data
+            DateTime now = DateTime.Now;
+            var vehicle = new Bogus.DataSets.Vehicle();
+            var parkedVehicle = new ParkedVehicle
+            {
+                RegNo = vehicle.Vin().Substring(0, 6),
+                CheckInTime = now,
+                ParkingTime = DateTime.Now - now,
+            };
+            return View(parkedVehicle);
         }
 
         // POST: ParkedVehicles/Create

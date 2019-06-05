@@ -40,10 +40,10 @@ namespace Garage25.Controllers
             }
 
             var parkedVehicles = _context.ParkedVehicle
-                .Where(p => p.OwnerId == member.Id);
+                .Where(p => p.MemberId == member.Id);
             if (parkedVehicles == null)
             {
-                return NotFound();
+                ViewData["numparkedvehicles"] = "0";
             }
 
             int numParkedVehicles = parkedVehicles.Count();

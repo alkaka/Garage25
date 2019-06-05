@@ -13,7 +13,9 @@ namespace Garage25.Models
         public TimeSpan ParkingTime { get; set; }
 
         //Navigation properties, not in EF-database
-        public int OwnerId { get; set; }
-        public int TypeId { get; set; }
+        public int MemberId { get; set; }
+        public Member Member { get; set; }
+        public int VehicleTypeId { get; set; }
+        public VehicleType VehicleType { get; set; }
     }
 }

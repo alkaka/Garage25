@@ -66,8 +66,8 @@ namespace Garage25.Data
                             RegNo = vh.Vin().Substring(0,6),
                             CheckInTime = now,
                             ParkingTime = DateTime.Now - now,
-                            OwnerId = member.Id,
-                            TypeId = vehicletype.Id
+                            MemberId = member.Id,
+                            VehicleTypeId = vehicletype.Id
                         };
                         parkedVehicles.Add(parkedVehicle);
                     }

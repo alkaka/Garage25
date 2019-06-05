@@ -47,35 +47,35 @@ namespace Garage25.Migrations
                     RegNo = table.Column<string>(nullable: true),
                     CheckInTime = table.Column<DateTime>(nullable: false),
                     ParkingTime = table.Column<TimeSpan>(nullable: false),
-                    OwnerId = table.Column<int>(nullable: true),
-                    TypeId = table.Column<int>(nullable: true)
+                    MemberId = table.Column<int>(nullable: false),
+                    VehicleTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ParkedVehicle", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ParkedVehicle_Member_OwnerId",
-                        column: x => x.OwnerId,
+                        name: "FK_ParkedVehicle_Member_MemberId",
+                        column: x => x.MemberId,
                         principalTable: "Member",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ParkedVehicle_VehicleType_TypeId",
-                        column: x => x.TypeId,
+                        name: "FK_ParkedVehicle_VehicleType_VehicleTypeId",
+                        column: x => x.VehicleTypeId,
                         principalTable: "VehicleType",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ParkedVehicle_OwnerId",
+                name: "IX_ParkedVehicle_MemberId",
                 table: "ParkedVehicle",
-                column: "OwnerId");
+                column: "MemberId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ParkedVehicle_TypeId",
+                name: "IX_ParkedVehicle_VehicleTypeId",
                 table: "ParkedVehicle",
-                column: "TypeId");
+                column: "VehicleTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
