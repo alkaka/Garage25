@@ -21,27 +21,34 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-info border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Best Garage</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/images/parkhouse.jpg" height="55"/>    Best Garage</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+                    <ul class=" nav navbar-nav  ml-xl-auto">
+                        <li style="float:right" class="nav-item" >
+                            <a class="nav-link float-right" href="~/Members/Create"> Register user</a>
+                        </li>                        
+                    </ul>
+                    <ul class="navbar-nav">
+                        @*flex-grow-1*@
                         @*<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>*@
+            <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        </li>*@
+                        @*<li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </li>*@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">Members</a>
+                            <a class="nav-link " asp-area="" asp-controller="Members" asp-action="Index">Members</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Garage</a>
+                            <a class="nav-link " asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Garage</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="VehicleType" asp-action="Index">Type</a>
+                            <a class="nav-link " asp-area="" asp-controller="VehicleTypes" asp-action="Index">Type</a>
                         </li>
                     </ul>
                 </div>
@@ -55,7 +62,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-black bg-info nav-link-black">
+    <footer class="border-top footer bg-info">
         <div class="container">
             &copy; 2019 - Best Garage - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
