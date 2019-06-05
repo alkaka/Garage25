@@ -174,9 +174,13 @@ namespace Garage25.Controllers
             {
                 return NotFound();
             }
-
             var parkedVehicle = await _context.ParkedVehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
+               .FirstOrDefaultAsync(m => m.Id == id);
+
+            var checkouttime = DateTime.Now;
+            ViewBag.checkouttime = checkouttime;
+            parkedVehicle.ParkingTime = DateTime.Now - parkedVehicle.CheckInTime;
+
             if (parkedVehicle == null)
             {
                 return NotFound();
@@ -185,17 +189,28 @@ namespace Garage25.Controllers
             return View(parkedVehicle);
         }
 
-
         // POST: ParkedVehicles/Delete/5
-        //parkedVehicle.ParkingTime = DateTime.Now - parkedVehicle.CheckInTime;
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> CheckOutConfirmed(int id)
         {
             var parkedVehicle = await _context.ParkedVehicle.FindAsync(id);
+            var model = new RecieptViewModel
+            {
+                RegNo = parkedVehicle.RegNo,
+                Brand = parkedVehicle.VehicleType.Brand,
+                CheckInTime = parkedVehicle.CheckInTime,
+                CheckOutTime = DateTime.Now
+                //Type = VType.Type,
+            };
+
+            var checkouttime = DateTime.Now;
+            ViewBag.checkouttime = checkouttime;
+            parkedVehicle.ParkingTime = DateTime.Now - parkedVehicle.CheckInTime;
+
             _context.ParkedVehicle.Remove(parkedVehicle);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return View("Receipt", model);
         }
 
 
