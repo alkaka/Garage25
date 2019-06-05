@@ -1,0 +1,75 @@
+﻿@model ParkedVehicleViewModel
+
+@{
+    ViewData["Title"] = "Index2";
+}
+
+<h2>Currently parked in the garage</h2>
+
+<form asp-action="Filter">
+    <div class="input-group mb-3">
+        <input type="text" name="SearchTerm" class="form-control" placeholder="Search Vehicle info" />
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-outline-secondary"><i class="fa fa-search"></i>&emsp;Search</button>
+            <label></label>
+        </div>
+    </div>
+</form>
+
+<p>
+    <a asp-action="Create">Park Vehicle</a>
+</p>
+
+
+<p>
+    <button class="btn btn-outline-secondary checkinbuttoncolor" type="submit" onclick="location.href='@Url.Action("Create", "ParkedVehicles")'">Checkin vehicle</button> @*<a asp-action="Create"></a>*@
+</p>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ParkedVehicles.FirstOrDefault().RegNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ParkedVehicles.FirstOrDefault().Member.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ParkedVehicles.FirstOrDefault().VehicleType.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ParkedVehicles.FirstOrDefault().ParkingTime)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ParkedVehicles)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Member.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleType.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ParkingTime)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Check Out Vehicle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (Model.ParkedVehicles.Count() == 0)
+{<p class="text-center text-danger">No result for @Model.SearchTerm</p>}

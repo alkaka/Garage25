@@ -24,6 +24,31 @@ namespace Garage25.Controllers
             return View(await _context.ParkedVehicle.ToListAsync());
         }
 
+        public async Task<IActionResult> Index2()
+        {
+            var model = new ParkedVehicleViewModel
+            {
+                ParkedVehicles = await _context.ParkedVehicle.Select(v => new VehicleIndexViewModel
+                {
+                    Id = v.Id,
+                    RegNo = v.RegNo,
+                    ParkingTime = DateTime.Now - v.CheckInTime,
+                    Member = v.Member,
+                    CheckInTime = v.CheckInTime,
+                    VehicleType = v.VehicleType,
+                    
+                }).ToListAsync(),
+            };
+
+
+            //var Parkedhours = DateTime.Now - model.CheckInTime;
+            //model.ParkingTime = Parkedhours;
+            //return View("Receipt", model);
+
+            return View(model);
+        }
+
+
         // GET: ParkedVehicles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -160,7 +185,9 @@ namespace Garage25.Controllers
             return View(parkedVehicle);
         }
 
+
         // POST: ParkedVehicles/Delete/5
+        //parkedVehicle.ParkingTime = DateTime.Now - parkedVehicle.CheckInTime;
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -171,9 +198,48 @@ namespace Garage25.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         private bool ParkedVehicleExists(int id)
         {
             return _context.ParkedVehicle.Any(e => e.Id == id);
         }
+        private bool ParkedVehicleExists(string regNo)
+        {
+            return _context.ParkedVehicle.Any(e => e.RegNo == regNo);
+        }
+        public async Task<IActionResult> Filter(string searchterm)
+
+        {
+        if (searchterm == null)
+        {
+            return Redirect(nameof(Index2));
+        }
+
+        searchterm = searchterm.ToLower();
+        var model = new ParkedVehicleViewModel
+        {
+
+            ParkedVehicles = await _context.ParkedVehicle.Where(r =>
+                    r.RegNo.ToLower() == searchterm ||
+                    r.Member.UserName.ToLower() == searchterm ||
+                    r.VehicleType.Type.ToString().ToLower() == searchterm).Select(v => new VehicleIndexViewModel
+
+
+
+                    //Enum.GetName(typeof(VehicleType), r.Type).ToString().ToLower() == searchterm).Select(v => new VehicleIndexViewModel
+                    {
+                        Id = v.Id,
+                        RegNo = v.RegNo,
+                        ParkingTime = DateTime.Now - v.CheckInTime,
+                        Member = v.Member,
+                        CheckInTime = v.CheckInTime,
+                        VehicleType = v.VehicleType
+                    }).ToListAsync(),
+            SearchTerm = searchterm
+        };
+        return View(nameof(Index2), model);
     }
 }
+}
+
+
