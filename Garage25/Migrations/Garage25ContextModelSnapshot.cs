@@ -42,11 +42,11 @@ namespace Garage25.Migrations
 
                     b.Property<DateTime>("CheckInTime");
 
+                    b.Property<string>("Color");
+
                     b.Property<int>("MemberId");
 
-                    b.Property<TimeSpan>("ParkingTime");
-
-                    b.Property<string>("RegNo");
+                    b.Property<string>("RegNum");
 
                     b.Property<int>("VehicleTypeId");
 
@@ -65,13 +65,7 @@ namespace Garage25.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Brand");
-
-                    b.Property<string>("Model");
-
-                    b.Property<int>("NumWheels");
-
-                    b.Property<int>("Type");
+                    b.Property<string>("Name");
 
                     b.HasKey("Id");
 
@@ -81,7 +75,7 @@ namespace Garage25.Migrations
             modelBuilder.Entity("Garage25.Models.ParkedVehicle", b =>
                 {
                     b.HasOne("Garage25.Models.Member", "Member")
-                        .WithMany()
+                        .WithMany("ParkedVehicles")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade);
 

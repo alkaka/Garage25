@@ -56,4 +56,12 @@ body {
 }
     /*.footer > container >nav-link{
         color: #00BFFF;
-    }*/  
+    }*/
+#checkinButton {
+    display: inline-block;
+    margin: 10px;
+}
+
+#inputForm {
+    display: inline-block;
+}

@@ -9,6 +9,12 @@ using Garage25.Models;
 
 namespace Garage25.Controllers
 {
+    public enum SearchTerm
+    {
+        UserName,
+        Email,
+        TimeStamp
+    }
     public class MembersController : Controller
     {
         private readonly Garage25Context _context;
@@ -19,10 +25,120 @@ namespace Garage25.Controllers
         }
 
         // GET: Members
+        public async Task<IActionResult> Index2()
+        {
+            IQueryable<SearchMViewModel> result = CreateSearchMViewModels();
+
+            return View(nameof(Index2), await result
+                                            .OrderBy(m => m.UserName)
+                                            .ToListAsync());
+        }
+
+        // GET: Members
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Member.ToListAsync());
+            await UpdateParkedVehicles();
+
+            return View(await _context.Member
+                            .OrderBy(m => m.UserName)
+                            .ToListAsync());
         }
+
+        private async Task UpdateParkedVehicles()
+        {
+            foreach (var member in _context.Member)
+            {
+                var parkedVehicles = _context.ParkedVehicle
+                                        .Where(p => p.MemberId == member.Id);
+                if (parkedVehicles != null)
+                    member.ParkedVehicles = await parkedVehicles.ToListAsync();
+            }
+        }
+
+        public async Task<IActionResult> Filter(string search, string reset, string searchterm)
+        {
+            IQueryable<Member> result = _context.Member;
+
+            if (string.IsNullOrWhiteSpace(reset) && !string.IsNullOrWhiteSpace(searchterm))
+            {
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    ViewData["Search"] = search;
+                    ViewData["Select"] = searchterm;
+
+                    search = search.ToUpper();
+
+                    switch ((SearchTerm)int.Parse(searchterm))
+                    {
+                        case SearchTerm.UserName:
+                            result = result.Where(m => m.UserName.Contains(search));
+                            break;
+                        case SearchTerm.Email:
+                            result = result.Where(m => m.Email.Contains(search));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            await UpdateParkedVehicles();
+
+            return View(nameof(Index), await result
+                                            .OrderBy(m => m.UserName)
+                                            .ToListAsync());
+        }
+
+        // GET: Members/Details/5
+        public async Task<IActionResult> Details2(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var member = await _context.Member
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (member == null)
+            {
+                return NotFound();
+            }
+
+
+            //var parkedVehicles = _context.ParkedVehicle
+            //    .Where(p => p.MemberId == member.Id);
+            
+
+            //if (parkedVehicles == null)
+            //{
+            //    ViewData["numparkedvehicles"] = "0";
+            //}
+            //else
+            //{
+            //    int numParkedVehicles = parkedVehicles.Count();
+
+            //    ViewData["numparkedvehicles"] = numParkedVehicles.ToString();
+            //}
+
+            var detailsMViewModel = new DetailsMViewModel
+            {
+                Id = member.Id,
+                UserName = member.UserName,
+                Email = member.Email,
+                ParkedVehicles = member.ParkedVehicles
+            };
+
+            var parkedVehicles = _context.ParkedVehicle
+               .Where(p => p.MemberId == member.Id);
+
+            if (parkedVehicles != null)
+            {
+                detailsMViewModel.ParkedVehicles = await parkedVehicles.ToListAsync<ParkedVehicle>();
+            }
+            
+            return View(detailsMViewModel);
+        }
+
 
         // GET: Members/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -39,16 +155,28 @@ namespace Garage25.Controllers
                 return NotFound();
             }
 
+            //var parkedVehicles = _context.ParkedVehicle
+            //    .Where(p => p.MemberId == member.Id);
+
+
+            //if (parkedVehicles == null)
+            //{
+            //    ViewData["numparkedvehicles"] = "0";
+            //}
+            //else
+            //{
+            //    int numParkedVehicles = parkedVehicles.Count();
+
+            //    ViewData["numparkedvehicles"] = numParkedVehicles.ToString();
+            //}
+
             var parkedVehicles = _context.ParkedVehicle
-                .Where(p => p.MemberId == member.Id);
-            if (parkedVehicles == null)
+               .Where(p => p.MemberId == member.Id);
+
+            if (parkedVehicles != null)
             {
-                ViewData["numparkedvehicles"] = "0";
+                member.ParkedVehicles = await parkedVehicles.ToListAsync<ParkedVehicle>();
             }
-
-            int numParkedVehicles = parkedVehicles.Count();
-
-            ViewData["numparkedvehicles"] = numParkedVehicles.ToString();
 
             return View(member);
         }
@@ -66,6 +194,8 @@ namespace Garage25.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,UserName,Email")] Member member)
         {
+            await CheckUnique(member);
+
             if (ModelState.IsValid)
             {
                 _context.Add(member);
@@ -103,6 +233,8 @@ namespace Garage25.Controllers
                 return NotFound();
             }
 
+            await CheckUnique(member);
+
             if (ModelState.IsValid)
             {
                 try
@@ -124,6 +256,19 @@ namespace Garage25.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(member);
+        }
+
+        private async Task CheckUnique(Member member)
+        {
+            if (await _context.Member.AnyAsync(m => m.UserName == member.UserName))
+            {
+                ModelState.AddModelError("UserName", $"\'{member.UserName}\' already exists!");
+            }
+
+            if (await _context.Member.AnyAsync(m => m.Email == member.Email))
+            {
+                ModelState.AddModelError("Email", $"\'{member.Email}\' already exists!");
+            }
         }
 
         // GET: Members/Delete/5
@@ -158,6 +303,18 @@ namespace Garage25.Controllers
         private bool MemberExists(int id)
         {
             return _context.Member.Any(e => e.Id == id);
+        }
+
+        private IQueryable<SearchMViewModel> CreateSearchMViewModels()
+        {
+            return _context.Member
+                     .Select(m => new SearchMViewModel
+                     {
+                         Id = m.Id,
+                         UserName = m.UserName,
+                         Email = m.Email,
+                         ParkedVehicles = m.ParkedVehicles
+                     });
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿@model IEnumerable<Garage25.Models.ParkedVehicle>
+﻿@model IEnumerable<Garage25.Models.ParkedVehicleViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index2";
 }
 
-<h1>Currently parked in the garage</h1>
+<h1>Index2</h1>
 
 <p>
     <a asp-action="Create2">Create New</a>
@@ -16,25 +16,32 @@
                 @Html.DisplayNameFor(model => model.RegNum)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color)
+                @Html.DisplayNameFor(model => model.Owner)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CheckInTime)
+                @Html.DisplayNameFor(model => model.VehicleType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ParkingTime)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.RegNum)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Color)
+                @Html.DisplayFor(modelItem => item.Owner)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CheckInTime)
+                @Html.DisplayFor(modelItem => item.VehicleType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParkingTime)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -42,6 +49,6 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>

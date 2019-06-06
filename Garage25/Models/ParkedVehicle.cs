@@ -8,9 +8,9 @@ namespace Garage25.Models
     public class ParkedVehicle
     {
         public int Id { get; set; }
-        public string RegNo { get; set; }
+        public string RegNum { get; set; }
+        public string Color { get; set; }
         public DateTime CheckInTime { get; set; }
-        public TimeSpan ParkingTime { get; set; }
 
         //Navigation properties, not in EF-database
         public int MemberId { get; set; }

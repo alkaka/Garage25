@@ -21,7 +21,9 @@ namespace Garage25.Controllers
         // GET: VehicleTypes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.VehicleType.ToListAsync());
+            return View(await _context.VehicleType
+                                .OrderBy(v => v.Name)
+                                .ToListAsync());
         }
 
         // GET: VehicleTypes/Details/5
@@ -53,8 +55,13 @@ namespace Garage25.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Type,Brand,Model,NumWheels")] VehicleType vehicleType)
+        public async Task<IActionResult> Create([Bind("Id,Name")] VehicleType vehicleType)
         {
+            if (await _context.VehicleType.AnyAsync(v => v.Name == vehicleType.Name))
+            {
+                ModelState.AddModelError("Name", $"\'{vehicleType.Name}\' already exists!");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(vehicleType);
@@ -77,7 +84,27 @@ namespace Garage25.Controllers
             {
                 return NotFound();
             }
+
+            CreateSelectList();
+
             return View(vehicleType);
+        }
+
+        private void CreateSelectList()
+        {
+            List<VehicleType> vehicleTypes = new List<VehicleType> {
+                new VehicleType { Name = "Airplane" },
+                new VehicleType { Name = "Bicycle" },
+                new VehicleType { Name = "Boat" },
+                new VehicleType { Name = "Bus" },
+                new VehicleType { Name = "Car" },
+                new VehicleType { Name = "Lorry" },
+                new VehicleType { Name = "Moped" },
+                new VehicleType { Name = "Motorcycle" },
+                new VehicleType { Name = "Train" },
+                new VehicleType { Name = "Truck" }
+            };
+            ViewData["Name"] = new SelectList(vehicleTypes, "Name", "Name");
         }
 
         // POST: VehicleTypes/Edit/5
@@ -85,7 +112,7 @@ namespace Garage25.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,Brand,Model,NumWheels")] VehicleType vehicleType)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] VehicleType vehicleType)
         {
             if (id != vehicleType.Id)
             {

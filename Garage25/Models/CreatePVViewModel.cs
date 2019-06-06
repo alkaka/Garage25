@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 
 namespace Garage25.Models
 {
-    public class CreateParkedVehicleViewModel
+    public class CreatePVViewModel
     {
-        public string RegNo { get; set; }
+        public string RegNum { get; set; }
+        public string Color { get; set; }
         public string UserName { get; set; }
+        public string TypeName { get; set; }
     }
 }

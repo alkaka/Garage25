@@ -6,9 +6,79 @@
 
 <h1>Registered Members</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>*@
+
+<div class="text-center">
+    <div @*class="text-center"*@ id="checkinButton">
+        <a asp-action="Create" value="Check in" class="btn btn-success">Check in</a>
+    </div>
+
+    <form asp-action="Filter" id="inputForm">
+        <div class="input-group-text">
+            <input name="search" class="form-control" placeholder="Search" id="searchField" value="@ViewData["Search"]" />
+            <div class="input-group-append">
+                <select name="searchterm" @*asp-items="Html.GetEnumSelectList<SearchTerm>()"*@ class="btn btn-primary" id="selectButton">
+
+                    @{ if (ViewData["Select"] == null)
+                        {
+                            @*<option value="">Select</option>*@
+                            <option value="0" selected="selected">Username</option>
+                            <option value="1">Email</option>
+                            @*<option value="2" disabled>Start time </option>*@
+                        }
+                        else
+                        {
+                            string select = ViewData["Select"].ToString();
+
+                            switch (select)
+                            {
+                                case "":
+                                    @*<option selected="selected" value="">Select</option>*@
+                                    <option value="0">Username</option>
+                                    <option value="1">Email</option>
+                                    @*<option value="2" disabled>Start time</option>*@
+                                    break;
+
+                                case "0":
+                                    @*<option value="">Select</option>*@
+                                    <option selected="selected" value="0">Username</option>
+                                    <option value="1">Email</option>
+                                    @*<option value="2" disabled>Start time</option>*@
+                                    break;
+
+                                case "1":
+                                    @*<option value="">Select</option>*@
+                                    <option value="0">Username</option>
+                                    <option selected="selected" value="1">Email</option>
+                                    @*<option value="2" disabled>Start time</option>*@
+                                    break;
+
+                                case "2":
+                                    @*<option value="">Select</option>*@
+                                    <option value="0">Username</option>
+                                    <option value="1">Email</option>
+                                    @*<option selected="selected" value="2" disabled>Start time</option>*@
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+
+                    }
+
+                </select>
+            </div>
+            <div class="input-group-append">
+                <input type="submit" name="regno" value="Search" class="btn btn-primary" id="searchButton" />
+                <input type="submit" name="reset" value="Reset" class="btn btn-primary" id="resetButton" />
+            </div>
+        </div>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -17,6 +87,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                Num Parked
             </th>
             <th></th>
         </tr>
@@ -29,6 +102,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParkedVehicles.Count)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
