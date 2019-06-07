@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Garage25.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Garage25.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Garage25.Controllers
 {
@@ -314,15 +314,42 @@ namespace Garage25.Controllers
             return View(parkedVehicle);
         }
 
+        //// POST: ParkedVehicles/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var parkedVehicle = await _context.ParkedVehicle.FindAsync(id);
+        //    _context.ParkedVehicle.Remove(parkedVehicle);
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
+
         // POST: ParkedVehicles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> CheckOutConfirmed(int id)
         {
+            DateTime now = DateTime.Now;
             var parkedVehicle = await _context.ParkedVehicle.FindAsync(id);
+            var model = new RecieptViewModel
+            {
+                RegNum = parkedVehicle.RegNum,
+                Color = parkedVehicle.Color,
+                CheckInTime = parkedVehicle.CheckInTime,
+                CheckOutTime = now,
+                TotalTime = now - parkedVehicle.CheckInTime,
+                VehicleType = _context.VehicleType.Any(v => v.Id == parkedVehicle.VehicleTypeId) ?
+                                    _context.VehicleType.First(v => v.Id == parkedVehicle.VehicleTypeId).Name : ""
+            };
+
+            //var Parkedhours = model.CheckOutTime - model.CheckInTime;
+            //model.TotalTime = string.Format("{0:D2}:{1:D2}:{2:D2}", Parkedhours.Days, Parkedhours.Hours, Parkedhours.Minutes);
+            //model.Price = String.Format("{0:F2}", Parkedhours.TotalHours * 10); ;
+
             _context.ParkedVehicle.Remove(parkedVehicle);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return View("Reciept", model);
         }
 
         private bool ParkedVehicleExists(int id)

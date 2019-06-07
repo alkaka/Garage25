@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-    <h3>Member Details</h3>
+<h3>Member Details</h3>
 
 <div>
     <hr />
@@ -30,15 +30,51 @@
     </dl>
 </div>
 
-<div class="row">
-    @foreach (var item in Model.ParkedVehicles)
-    {
-        <div class="col-sm-4"> </div>
-        <div class="col-sm-8">
-            <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.RegNum</a>
-        </div>
-    }
-</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Registeration Number
+            </th>
+            <th>
+                Check in Time
+            </th>
+            <th>
+                Vehicle Color
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ParkedVehicles)
+        {
+            <tr>
+                <td>
+                    <div class="col-sm-4">
+
+                    </div>
+                    <div class="col-sm-8">
+                        <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.RegNum</a>
+                    </div>
+                </td>
+                <td>
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-8">
+                        <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.CheckInTime</a>
+                    </div>
+                </td>
+                <td>
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-8">
+                        <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.Color</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |

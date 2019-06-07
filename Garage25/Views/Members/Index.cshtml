@@ -4,14 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-</br>
+<h2 class="text-center">List of Best Garage Members</h2>
+<br>
 
-@*<p>
-        <a asp-action="Create">Create New</a>
-    </p>*@
+
 
 <div class="text-center">
-    <div @*class="text-center"*@ id="checkinButton">
+    <div @*class="text-center" *@ id="checkinButton">
         <a asp-action="Create" value="Check in" class="btn btn-success">Registered Members</a>
     </div>
 
@@ -19,7 +18,7 @@
         <div class="input-group-text">
             <input name="search" class="form-control" placeholder="Search" id="searchField" value="@ViewData["Search"]" />
             <div class="input-group-append">
-                <select name="searchterm" @*asp-items="Html.GetEnumSelectList<SearchTerm>()"*@ class="btn btn-primary" id="selectButton">
+                <select name="searchterm" @*asp-items="Html.GetEnumSelectList<SearchTerm>()" *@ class="btn btn-primary" id="selectButton">
 
                     @{ if (ViewData["Select"] == null)
                         {
@@ -79,7 +78,7 @@
     </form>
 </div>
 
-</br>
+<br>
 
 <table class="table">
     <thead>
