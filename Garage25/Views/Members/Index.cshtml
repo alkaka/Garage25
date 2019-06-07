@@ -4,15 +4,15 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Registered Members</h1>
+</br>
 
 @*<p>
-    <a asp-action="Create">Create New</a>
-</p>*@
+        <a asp-action="Create">Create New</a>
+    </p>*@
 
 <div class="text-center">
     <div @*class="text-center"*@ id="checkinButton">
-        <a asp-action="Create" value="Check in" class="btn btn-success">Check in</a>
+        <a asp-action="Create" value="Check in" class="btn btn-success">Registered Members</a>
     </div>
 
     <form asp-action="Filter" id="inputForm">
@@ -24,7 +24,7 @@
                     @{ if (ViewData["Select"] == null)
                         {
                             @*<option value="">Select</option>*@
-                            <option value="0" selected="selected">Username</option>
+                            <option value="0" selected="selected">User name</option>
                             <option value="1">Email</option>
                             @*<option value="2" disabled>Start time </option>*@
                         }
@@ -79,6 +79,8 @@
     </form>
 </div>
 
+</br>
+
 <table class="table">
     <thead>
         <tr>
@@ -89,29 +91,30 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                Num Parked
+                Number of Parked Vehicle
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParkedVehicles.Count)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ParkedVehicles.Count)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete Member</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
