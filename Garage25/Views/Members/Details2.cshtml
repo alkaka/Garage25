@@ -1,10 +1,10 @@
-﻿@model Garage25.Models.Member
+﻿@model Garage25.Models.DetailsMViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Details2";
 }
 
-<h1>Details</h1>
+<h1>Details2</h1>
 
 <div>
     <h4>Member</h4>
@@ -34,14 +34,16 @@
 <div class="row">
     @foreach (var item in Model.ParkedVehicles)
     {
-        <div class="col-sm-4"> </div>
+        <div class="col-sm-4">
+           
+        </div>
         <div class="col-sm-8">
-            <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.RegNum</a>
+            <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.RegNum.</a>
         </div>
     }
 </div>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>

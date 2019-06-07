@@ -7,22 +7,19 @@
 <h1>Currently parked in the garage</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create2">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Registration Number
-                @*@Html.DisplayNameFor(model => model.RegNo)*@
+                @Html.DisplayNameFor(model => model.RegNum)
             </th>
             <th>
-                Check in time
-                @*@Html.DisplayNameFor(model => model.CheckInTime)*@
+                @Html.DisplayNameFor(model => model.Color)
             </th>
             <th>
-                Parking time
-                @*@Html.DisplayNameFor(model => model.ParkingTime)*@
+                @Html.DisplayNameFor(model => model.CheckInTime)
             </th>
             <th></th>
         </tr>
@@ -31,13 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.RegNo)
+                @Html.DisplayFor(modelItem => item.RegNum)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CheckInTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParkingTime)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

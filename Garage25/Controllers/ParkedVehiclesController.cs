@@ -19,38 +19,24 @@ namespace Garage25.Controllers
         }
 
         // GET: ParkedVehicles
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.ParkedVehicle.ToListAsync());
-        }
-
         public async Task<IActionResult> Index2()
         {
-            var model = new ParkedVehicleViewModel
-            {
-                ParkedVehicles = await _context.ParkedVehicle.Select(v => new VehicleIndexViewModel
-                {
-                    Id = v.Id,
-                    RegNo = v.RegNo,
-                    ParkingTime = DateTime.Now - v.CheckInTime,
-                    Member = v.Member,
-                    CheckInTime = v.CheckInTime,
-                    VehicleType = v.VehicleType,
-                    
-                }).ToListAsync(),
-            };
+            var result = CreateParkedVehicleViewModels();
 
-
-            //var Parkedhours = DateTime.Now - model.CheckInTime;
-            //model.ParkingTime = Parkedhours;
-            //return View("Receipt", model);
-
-            return View(model);
+            return View(await result.OrderBy(p => p.RegNum).ToListAsync());
         }
 
+        // GET: ParkedVehicles
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.ParkedVehicle
+                                    .OrderBy(p => p.RegNum)
+                                    .ToListAsync());
+        }
 
         // GET: ParkedVehicles/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> 
+            Details(int? id)
         {
             if (id == null)
             {
@@ -63,8 +49,6 @@ namespace Garage25.Controllers
             {
                 return NotFound();
             }
-
-            parkedVehicle.ParkingTime = DateTime.Now - parkedVehicle.CheckInTime;
 
             var member = await _context.Member
                 .FirstOrDefaultAsync(m => m.Id == parkedVehicle.MemberId);
@@ -80,9 +64,108 @@ namespace Garage25.Controllers
             {
                 return NotFound();
             }
-            ViewData["vehicletypename"] = vehicletype.Type.ToString();
+            ViewData["vehicletypename"] = vehicletype.Name;
 
             return View(parkedVehicle);
+        }
+
+        // GET: ParkedVehicles/Create
+        public IActionResult Create2()
+        {
+            // Add some bogus data
+            var vehicle = new Bogus.DataSets.Vehicle();
+
+            // Select random color
+            string[] colors = { "Black",
+                                "Blue",
+                                "Green",
+                                "Grey",
+                                "Lila",
+                                "Magenta",
+                                "Purple",
+                                "Red",
+                                "White",
+                                "Yellow" };
+            Random random = new Random();
+
+            var createPVViewModel = new CreatePVViewModel
+            {
+                RegNum = vehicle.Vin().Substring(0, 6),
+                Color = colors[random.Next(0, 9)],
+                UserName = ""
+            };
+
+            ViewData["UserName"] = new SelectList(_context.Member
+                                                   .OrderBy(m => m.UserName), "UserName", "UserName");
+
+            ViewData["TypeName"] = new SelectList(_context.VehicleType
+                                                    .OrderBy(v => v.Name), "Name", "Name");
+
+            return View(createPVViewModel);
+        }
+
+        // POST: ParkedVehicles/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create2([Bind("RegNum,Color,UserName,TypeName")] CreatePVViewModel createPVViewModel)
+        {
+            if (await _context.ParkedVehicle.AnyAsync(p => p.RegNum == createPVViewModel.RegNum))
+            {
+                ModelState.AddModelError("RegNum", $"\'{createPVViewModel.RegNum}\' already exists!");
+            }
+
+            if (!await _context.Member.AnyAsync(m => m.UserName == createPVViewModel.UserName))
+            {
+                ModelState.AddModelError("UserName", $"\'{createPVViewModel.UserName}\' do not exists!");
+            }
+
+            if (!await _context.VehicleType.AnyAsync(v => v.Name == createPVViewModel.TypeName))
+            {
+                ModelState.AddModelError("TypeName", $"\'{createPVViewModel.TypeName}\' do not exists!");
+            }
+
+            if (ModelState.IsValid)
+            {
+                Member member = await _context.Member
+                                .FirstOrDefaultAsync(m => m.UserName == createPVViewModel.UserName);
+                if (member == null)
+                {
+                    return NotFound();
+                }
+
+                VehicleType vehicleType = await _context.VehicleType
+                                .FirstOrDefaultAsync(v => v.Name == createPVViewModel.TypeName);
+                if (vehicleType == null)
+                {
+                    return NotFound();
+                }
+
+                DateTime now = DateTime.Now;
+                ParkedVehicle parkedVehicle = new ParkedVehicle
+                {
+                    RegNum = createPVViewModel.RegNum,
+                    Color = createPVViewModel.Color,
+                    CheckInTime = now,
+                    MemberId = member.Id,
+                    Member = member,
+                    VehicleTypeId = vehicleType.Id,
+                    VehicleType = vehicleType
+                };
+
+                _context.Add(parkedVehicle);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["UserName"] = new SelectList(_context.Member
+                                                   .OrderBy(m => m.UserName), "UserName", "UserName");
+
+            ViewData["TypeName"] = new SelectList(_context.VehicleType
+                                                   .OrderBy(v => v.Name), "Name", "Name");
+
+            return View(createPVViewModel);
         }
 
         // GET: ParkedVehicles/Create
@@ -93,9 +176,8 @@ namespace Garage25.Controllers
             var vehicle = new Bogus.DataSets.Vehicle();
             var parkedVehicle = new ParkedVehicle
             {
-                RegNo = vehicle.Vin().Substring(0, 6),
-                CheckInTime = now,
-                ParkingTime = DateTime.Now - now,
+                RegNum = vehicle.Vin().Substring(0, 6),
+                CheckInTime = now
             };
             return View(parkedVehicle);
         }
@@ -105,7 +187,7 @@ namespace Garage25.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,RegNo,CheckInTime,ParkingTime")] ParkedVehicle parkedVehicle)
+        public async Task<IActionResult> Create([Bind("Id,RegNum,Color,Member.UserName")] ParkedVehicle parkedVehicle)
         {
             if (ModelState.IsValid)
             {
@@ -137,11 +219,16 @@ namespace Garage25.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RegNo,CheckInTime,ParkingTime")] ParkedVehicle parkedVehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,RegNum,Color")] ParkedVehicle parkedVehicle)
         {
             if (id != parkedVehicle.Id)
             {
                 return NotFound();
+            }
+
+            if (await _context.ParkedVehicle.AnyAsync(p => p.RegNum == parkedVehicle.RegNum))
+            {
+                ModelState.AddModelError("RegNum", $"\'{parkedVehicle.RegNum}\' already exists");
             }
 
             if (ModelState.IsValid)
@@ -174,13 +261,9 @@ namespace Garage25.Controllers
             {
                 return NotFound();
             }
+
             var parkedVehicle = await _context.ParkedVehicle
-               .FirstOrDefaultAsync(m => m.Id == id);
-
-            var checkouttime = DateTime.Now;
-            ViewBag.checkouttime = checkouttime;
-            parkedVehicle.ParkingTime = DateTime.Now - parkedVehicle.CheckInTime;
-
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (parkedVehicle == null)
             {
                 return NotFound();
@@ -192,69 +275,50 @@ namespace Garage25.Controllers
         // POST: ParkedVehicles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CheckOutConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var parkedVehicle = await _context.ParkedVehicle.FindAsync(id);
-            var model = new RecieptViewModel
-            {
-                RegNo = parkedVehicle.RegNo,
-                Brand = parkedVehicle.VehicleType.Brand,
-                CheckInTime = parkedVehicle.CheckInTime,
-                CheckOutTime = DateTime.Now
-                //Type = VType.Type,
-            };
-
-            var checkouttime = DateTime.Now;
-            ViewBag.checkouttime = checkouttime;
-            parkedVehicle.ParkingTime = DateTime.Now - parkedVehicle.CheckInTime;
-
             _context.ParkedVehicle.Remove(parkedVehicle);
             await _context.SaveChangesAsync();
-            return View("Receipt", model);
+            return RedirectToAction(nameof(Index));
         }
-
 
         private bool ParkedVehicleExists(int id)
         {
             return _context.ParkedVehicle.Any(e => e.Id == id);
         }
-        private bool ParkedVehicleExists(string regNo)
+
+        private void CreateSelectList()
         {
-            return _context.ParkedVehicle.Any(e => e.RegNo == regNo);
+            //List<VehicleType> vehicleTypes = new List<VehicleType> {
+            //    new VehicleType { Name = "Airplane" },
+            //    new VehicleType { Name = "Bicycle" },
+            //    new VehicleType { Name = "Boat" },
+            //    new VehicleType { Name = "Bus" },
+            //    new VehicleType { Name = "Car" },
+            //    new VehicleType { Name = "Lorry" },
+            //    new VehicleType { Name = "Moped" },
+            //    new VehicleType { Name = "Motorcycle" },
+            //    new VehicleType { Name = "Train" },
+            //    new VehicleType { Name = "Truck" }
+            //};
+
+            ViewData["Name"] = new SelectList(_context.VehicleType, "Name", "Name");
         }
-        public async Task<IActionResult> Filter(string searchterm)
 
+        private IQueryable<ParkedVehicleViewModel> CreateParkedVehicleViewModels()
         {
-        if (searchterm == null)
-        {
-            return Redirect(nameof(Index2));
+            return _context.ParkedVehicle
+                     .Select( p => new ParkedVehicleViewModel
+                     {
+                         Id = p.Id,
+                         RegNum = p.RegNum,
+                         ParkingTime = DateTime.Now - p.CheckInTime,
+                         Owner = _context.Member.Any(m => m.Id == p.MemberId) ? 
+                                     _context.Member.First(m => m.Id == p.MemberId).UserName : "",
+                         VehicleType = _context.VehicleType.Any(v => v.Id == p.VehicleTypeId) ?
+                                            _context.VehicleType.First(v => v.Id == p.VehicleTypeId).Name : ""
+                     }); 
         }
-
-        searchterm = searchterm.ToLower();
-        var model = new ParkedVehicleViewModel
-        {
-
-            ParkedVehicles = await _context.ParkedVehicle.Where(r =>
-                    r.RegNo.ToLower() == searchterm ||
-                    r.Member.UserName.ToLower() == searchterm ||
-                    r.VehicleType.Type.ToString().ToLower() == searchterm).Select(v => new VehicleIndexViewModel
-
-
-
-                    //Enum.GetName(typeof(VehicleType), r.Type).ToString().ToLower() == searchterm).Select(v => new VehicleIndexViewModel
-                    {
-                        Id = v.Id,
-                        RegNo = v.RegNo,
-                        ParkingTime = DateTime.Now - v.CheckInTime,
-                        Member = v.Member,
-                        CheckInTime = v.CheckInTime,
-                        VehicleType = v.VehicleType
-                    }).ToListAsync(),
-            SearchTerm = searchterm
-        };
-        return View(nameof(Index2), model);
     }
 }
-}
-
-

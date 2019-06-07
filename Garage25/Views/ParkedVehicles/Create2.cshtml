@@ -1,7 +1,6 @@
-﻿@model Garage25.Models.ParkedVehicle
-
+﻿@model Garage25.Models.CreatePVViewModel
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create2";
 }
 
 <h1>Create</h1>
@@ -10,7 +9,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create2">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="RegNum" class="control-label"></label>
@@ -22,21 +21,22 @@
                 <input asp-for="Color" class="form-control" />
                 <span asp-validation-for="Color" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                @*<input asp-for="UserName" class="form-control" />*@
+                <select asp-for="UserName" class="form-control" asp-items="ViewBag.UserName">></select>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TypeName" class="control-label"></label>
+                <select asp-for="TypeName" class="form-control" asp-items="ViewBag.TypeName">></select>
+                <span asp-validation-for="TypeName" class="text-danger"></span>
+            </div>
             @*<div class="form-group">
-                <label asp-for="CheckInTime" class="control-label"></label>
-                <input asp-for="CheckInTime" class="form-control" />
-                <span asp-validation-for="CheckInTime" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <label asp-for="Member.UserName" class="control-label"></label>
-                <input asp-for="Member.UserName" class="form-control" />
-                <span asp-validation-for="Member.UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VehicleTypeId" class="control-label"></label>
-                <input asp-for="VehicleTypeId" class="form-control" />
-                <span asp-validation-for="VehicleTypeId" class="text-danger"></span>
-            </div>
+            <label asp-for="VehicleTypeId" class="control-label"></label>
+            <input asp-for="VehicleTypeId" class="form-control" />
+            <span asp-validation-for="VehicleTypeId" class="text-danger"></span>
+        </div>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
