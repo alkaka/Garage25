@@ -304,17 +304,5 @@ namespace Garage25.Controllers
         {
             return _context.Member.Any(e => e.Id == id);
         }
-
-        private IQueryable<SearchMViewModel> CreateSearchMViewModels()
-        {
-            return _context.Member
-                     .Select(m => new SearchMViewModel
-                     {
-                         Id = m.Id,
-                         UserName = m.UserName,
-                         Email = m.Email,
-                         ParkedVehicles = m.ParkedVehicles
-                     });
-        }
     }
 }
