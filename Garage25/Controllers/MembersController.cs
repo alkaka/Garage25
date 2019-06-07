@@ -9,7 +9,7 @@ using Garage25.Models;
 
 namespace Garage25.Controllers
 {
-    public enum SearchTerm
+    public enum MSearchTerm
     {
         UserName,
         Email,
@@ -25,14 +25,14 @@ namespace Garage25.Controllers
         }
 
         // GET: Members
-        public async Task<IActionResult> Index2()
-        {
-            IQueryable<SearchMViewModel> result = CreateSearchMViewModels();
+        //public async Task<IActionResult> Index2()
+        //{
+        //    IQueryable<SearchMViewModel> result = CreateSearchMViewModels();
 
-            return View(nameof(Index2), await result
-                                            .OrderBy(m => m.UserName)
-                                            .ToListAsync());
-        }
+        //    return View(nameof(Index2), await result
+        //                                    .OrderBy(m => m.UserName)
+        //                                    .ToListAsync());
+        //}
 
         // GET: Members
         public async Task<IActionResult> Index()
@@ -68,13 +68,15 @@ namespace Garage25.Controllers
 
                     search = search.ToUpper();
 
-                    switch ((SearchTerm)int.Parse(searchterm))
+                    switch ((MSearchTerm)int.Parse(searchterm))
                     {
-                        case SearchTerm.UserName:
-                            result = result.Where(m => m.UserName.Contains(search));
+                        case MSearchTerm.UserName:
+                            // result = result.Where(m => m.UserName.Contains(search)); // Seems to work with case
+                            result = result.Where(m => m.UserName.Contains(search, StringComparison.CurrentCultureIgnoreCase));
                             break;
-                        case SearchTerm.Email:
-                            result = result.Where(m => m.Email.Contains(search));
+                        case MSearchTerm.Email:
+                            // result = result.Where(m => m.Email.Contains(search)); // Seems to work with case
+                            result = result.Where(m => m.Email.Contains(search, StringComparison.CurrentCultureIgnoreCase));
                             break;
                         default:
                             break;
