@@ -9,6 +9,11 @@ using Garage25.Models;
 
 namespace Garage25.Controllers
 {
+    public enum PVSearchTerm
+    {
+        RegNum,
+        VehicleType
+    }
     public class ParkedVehiclesController : Controller
     {
         private readonly Garage25Context _context;
@@ -197,6 +202,43 @@ namespace Garage25.Controllers
             }
             return View(parkedVehicle);
         }
+
+        public async Task<IActionResult> Filter(string search, string reset, string searchterm)
+        {
+           // IQueryable<Member> result = _context.ParkedVehicles;
+            var result = CreateParkedVehicleViewModels();
+
+            if (string.IsNullOrWhiteSpace(reset) && !string.IsNullOrWhiteSpace(searchterm))
+            {
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    ViewData["Search"] = search;
+                    ViewData["Select"] = searchterm;
+
+                    //  search = search.ToUpper();
+
+                    switch ((PVSearchTerm)int.Parse(searchterm))
+                    {
+                        case PVSearchTerm.RegNum:
+                            result = result.Where(m => m.RegNum.Contains(search, StringComparison.CurrentCultureIgnoreCase));
+                            break;
+                        case PVSearchTerm.VehicleType:
+                            result = result.Where(m => m.VehicleType.Contains(search, StringComparison.CurrentCultureIgnoreCase));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+          //  await UpdateParkedVehicles();
+
+            return View(nameof(Index2), await result
+                                            .OrderBy(m => m.RegNum)
+                                            .ToListAsync());
+        }
+
+
 
         // GET: ParkedVehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
