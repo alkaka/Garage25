@@ -12,7 +12,8 @@
         <form asp-action="Create2">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="RegNum" class="control-label"></label>
+                @*<label asp-for="RegNum" class="control-label"></label>*@
+                <label class="control-label" for="RegNum">Registration Number</label>
                 <input asp-for="RegNum" class="form-control" />
                 <span asp-validation-for="RegNum" class="text-danger"></span>
             </div>
@@ -22,13 +23,15 @@
                 <span asp-validation-for="Color" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
+                @*<label asp-for="UserName" class="control-label"></label>*@
+                <label class="control-label" for="UserName">User Name</label>
                 @*<input asp-for="UserName" class="form-control" />*@
                 <select asp-for="UserName" class="form-control" asp-items="ViewBag.UserName">></select>
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TypeName" class="control-label"></label>
+                @*<label asp-for="TypeName" class="control-label"></label>*@
+                <label class="control-label" for="UserName">Vehicle Type</label>
                 <select asp-for="TypeName" class="form-control" asp-items="ViewBag.TypeName">></select>
                 <span asp-validation-for="TypeName" class="text-danger"></span>
             </div>

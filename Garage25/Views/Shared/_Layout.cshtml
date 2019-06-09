@@ -29,19 +29,21 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class=" nav navbar-nav  ml-xl-auto">
-                        <li style="float:right" class="nav-item">
-                            <a class="nav-link float-right" href="~/ParkedVehicles/Create">Park Vehicle</a>
-                            <a class="nav-link float-right" href="~/Members/Create">Registered Member</a>
-                        </li>                        
-                    </ul>
+                            <li style="float:right" class="nav-item">
+                                <a class="nav-link float-right" href="~/Members/Create">Register</a>
+                            </li>
+                            <li style="float:right" class="nav-item">
+                                <a class="nav-link float-right" href="~/ParkedVehicles/Create2">Check In</a>
+                            </li>
+                        </ul>
                     <ul class="navbar-nav">
                         @*flex-grow-1*@
                         @*<li class="nav-item">
-            <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-        </li>*@
+                                <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>*@
                         @*<li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </li>*@
+                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                         </li>*@
                         <li class="nav-item">
                             <a class="nav-link " asp-area="" asp-controller="Members" asp-action="Index">Members</a>
                         </li>
@@ -49,10 +51,10 @@
                             <a class="nav-link " asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Garage</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " asp-area="" asp-controller="VehicleTypes" asp-action="Index">Type</a>
+                            <a class="nav-link " asp-area="" asp-controller="VehicleTypes" asp-action="Index">Vehicle Types</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkedVehicles" asp-action="Index2">Index2</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkedVehicles" asp-action="Index2">Overview</a>
                         </li>
                     </ul>
                 </div>

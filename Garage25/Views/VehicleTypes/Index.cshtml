@@ -4,18 +4,73 @@
     ViewData["Title"] = "Index";
 }
 
-<h3>List of Vehicle Type</h3>
+<h2 class="text-center">Vehicle Types</h2>
+<br>
 
-<p>
-    <a asp-action="Create">Create a New Vehicle Type</a>
-</p>
+@*<div class="text-center">
+    <div id="checkinButton">
+        <a asp-action="Create" class="btn btn-success">Create</a>
+    </div>
+</div>*@
+
+<div class="text-center">
+    @*<div id="createDiv">
+            <button asp-action="Create" type="submit" formmethod="get" value="Check in" class="btn btn-success" id="createButton">Register</button>
+        </div>*@
+
+    <form asp-action="Filter" id="inputForm">
+        <div class="input-group-text">
+            <button asp-action="Create" type="submit" formmethod="get" value="Check in" class="btn btn-success" id="createButton">Create</button>
+            <input name="search" class="form-control" placeholder="Search" id="searchField" value="@ViewData["Search"]" />
+            <div class="input-group-append">
+                <input type="submit" name="regno" value="Search" class="btn btn-primary" id="searchButton" />
+                <input type="submit" name="reset" value="Reset" class="btn btn-primary" id="resetButton" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
 <table class="table">
     <thead>
         <tr>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th></th>*@
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @if (ViewData["Search"] != null)
+                {
+                    @Html.DisplayNameFor(model => model.Name)
+                }
+                else
+                {
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortOrder"]">@Html.DisplayNameFor(model => model.Name)</a>
+                }
             </th>
-            <th></th>
+            <th>
+                @if (ViewData["Search"] == null)
+                {
+                    <span class="text-center text-danger" id="messageField"></span>
+                }
+                else if (Model.Count() == 0)
+                {
+                    <span class="text-center text-danger" id="messageField">No match</span>
+                }
+                else if (Model.Count() == 1)
+                {
+                    <span class="text-center text-success" id="messageField">@Model.Count() match</span>
+                }
+                else
+                {
+                    <span class="text-center text-success" id="messageField">@Model.Count() matches</span>
+                }
+
+                @if (TempData["Message"] != null)
+                {
+                    <span class="text-center text-success" id="messageField">@TempData["Message"]</span>
+                }
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -28,7 +83,7 @@
                 <td>
                     @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |*@
                     @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete Vehicle Type</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }

@@ -73,19 +73,31 @@ namespace Garage25.Data
                                     "Yellow" };
 
                 var vh = new Bogus.DataSets.Vehicle();
+                var memberIds = new List<int>();
+                foreach (var member in members)
+                {
+                    memberIds.Add(member.Id);
+                }
+                var vehicleTypeIds = new List<int>();
+                foreach (var vehicletype in vehicletypes)
+                {
+                    vehicleTypeIds.Add(vehicletype.Id);
+                }
                 var parkedVehicles = new List<ParkedVehicle>();
                 foreach (var member in members)
                 {
                     foreach (var vehicletype in vehicletypes)
                     {
-                        DateTime now = DateTime.Now;
                         var parkedVehicle = new ParkedVehicle
                         {
                             RegNum = vh.Vin().Substring(0,6),
                             Color = colors[random.Next(0,9)],
-                            CheckInTime = now,
-                            MemberId = member.Id,
-                            VehicleTypeId = vehicletype.Id
+                            CheckInTime = DateTime.Now.AddDays(random.Next(-10,0))
+                                                      .AddHours(random.Next(0,24))
+                                                      .AddMinutes(random.Next(0,60))
+                                                      .AddSeconds(random.Next(0,60)),
+                            MemberId = memberIds[random.Next(0,9)],
+                            VehicleTypeId = vehicleTypeIds[random.Next(0,9)],
                         };
                         parkedVehicles.Add(parkedVehicle);
                     }

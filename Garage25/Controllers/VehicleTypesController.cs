@@ -9,6 +9,11 @@ using Garage25.Models;
 
 namespace Garage25.Controllers
 {
+    public enum VSearchTerm
+    {
+        Name
+    }
+
     public class VehicleTypesController : Controller
     {
         private readonly Garage25Context _context;
@@ -19,11 +24,36 @@ namespace Garage25.Controllers
         }
 
         // GET: VehicleTypes
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.VehicleType
+        //                        .OrderBy(v => v.Name)
+        //                        .ToListAsync());
+        //}
+
+        // GET: VehicleTypes
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.VehicleType
-                                .OrderBy(v => v.Name)
-                                .ToListAsync());
+            ViewData["NameSortOrder"] = string.IsNullOrEmpty(sortOrder) ? "Name_desc" : "";
+
+            IQueryable<VehicleType> result = _context.VehicleType;
+
+            switch (sortOrder)
+            {
+                case "Name_desc":
+                    result = result.OrderByDescending(v => v.Name);
+                    TempData["message"] = "Sorting \'Name\' descending";
+                    break;
+                default:
+                    result = result.OrderBy(m => m.Name);
+                    if (TempData["message"] == null)
+                        TempData["message"] = "Sorting \'Name\' ascending";
+                    else if (!TempData["message"].ToString().Contains("Vehicle Type"))
+                        TempData["message"] = "Sorting \'Name\' ascending";
+                    break;
+            }
+
+            return View(nameof(Index), await result.ToListAsync());
         }
 
         // GET: VehicleTypes/Details/5
@@ -66,6 +96,9 @@ namespace Garage25.Controllers
             {
                 _context.Add(vehicleType);
                 await _context.SaveChangesAsync();
+
+                TempData["Message"] = $"Vehicle Type \'{vehicleType.Name}\' is created";
+
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicleType);
@@ -168,7 +201,27 @@ namespace Garage25.Controllers
             var vehicleType = await _context.VehicleType.FindAsync(id);
             _context.VehicleType.Remove(vehicleType);
             await _context.SaveChangesAsync();
+
+            TempData["Message"] = $"Vehicle Type \'{vehicleType.Name}\' is deleted";
+
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Filter(string search, string reset)
+        {
+            IQueryable<VehicleType> result = _context.VehicleType;
+
+            if (string.IsNullOrWhiteSpace(reset))
+            {
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    ViewData["Search"] = search;
+
+                    result = result.Where(m => m.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase));  
+                }
+            }
+
+            return View(nameof(Index), await result.OrderBy(m => m.Name).ToListAsync());
         }
 
         private bool VehicleTypeExists(int id)
