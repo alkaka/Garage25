@@ -97,10 +97,14 @@ enableDisableButton();
 //enableDisableButton();        
 
 
-function printContent(el){
-	var restorepage = document.body.innerHTML;
-	var printcontent = document.getElementById(el).innerHTML;
-	document.body.innerHTML = printcontent;
-	window.print();
-	document.body.innerHTML = restorepage;
+
+// this code for Print option 
+document.querySelector('#printLink').addEventListener('click', printDiv);
+printDivCSS = new String('<link href="myprintstyle.css" rel="stylesheet" type="text/css">');
+function printDiv() {
+    let printDiv = document.querySelector('#print').innerHTML;
+    let = output = printDivCSS + printDiv;
+    window.frames["print_frame"].document.body.innerHTML = output;
+    window.frames["print_frame"].window.focus();
+    window.frames["print_frame"].window.print();
 }

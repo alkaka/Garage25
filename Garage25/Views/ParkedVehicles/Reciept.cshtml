@@ -2,51 +2,51 @@
 @{
     ViewData["Title"] = "Reciept";
 }
-<div>
+
+<div id="print">
     <br>
     <h3>Reciept for Vehicle</h3>
     <hr />
-
     <dl class="row">
-        <dt class="col-sm-4">
+        <dt class="col-sm-2">
             @*@Html.DisplayNameFor(model => model.RegNum)*@
             Registration Number
         </dt>
-        <dd class="col-sm-8">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RegNum)
         </dd>
-        <dt class="col-sm-4">
+        <dt class="col-sm-2">
             @*@Html.DisplayNameFor(model => model.VehicleType)*@
             Vehicle Type
         </dt>
-        <dd class="col-sm-8">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.VehicleType)
         </dd>
-        <dt class="col-sm-4">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Color)
         </dt>
-        <dd class="col-sm-8">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Color)
         </dd>
-        <dt class="col-sm-4">
+        <dt class="col-sm-2">
             @*@Html.DisplayNameFor(model => model.CheckInTime)*@
             Check In Time
         </dt>
-        <dd class="col-sm-8">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CheckInTime)
         </dd>
-        <dt class="col-sm-4">
+        <dt class="col-sm-2">
             @*@Html.DisplayNameFor(model => model.CheckOutTime)*@
             Check Out Time
         </dt>
-        <dd class="col-sm-8">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CheckOutTime)
         </dd>
-        <dt class="col-sm-4">
+        <dt class="col-sm-2">
             @*@Html.DisplayNameFor(model => model.TotalTime)*@
             Total Time
         </dt>
-        <dd class="col-sm-8">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.TotalTime)
         </dd>
     </dl>
@@ -54,6 +54,8 @@
 
 <div>
     <hr>
-    <a href="javascript:window.print()"> Print This Page</a> |
+    <a id="printLink" href="#">Print</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
