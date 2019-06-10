@@ -37,13 +37,24 @@
                 Registeration Number
             </th>
             <th>
-                Check in Time
+                Check In Time
             </th>
             <th>
-                Vehicle Color
+                Color
             </th>
             <th></th>
         </tr>
+        @*<tr>
+            <th>
+                <a asp-action="Details2" asp-route-sortOrder="@ViewData["RegNumSortOrder"]">Registeration Number</a>
+            </th>
+            <th>
+                <a asp-action="Details2" asp-route-sortOrder="@ViewData["CheckInTimeSortOrder"]">Check In Time</a>
+            </th>
+            <th>
+                <a asp-action="Details2" asp-route-sortOrder="@ViewData["ColorSortOrder"]">Color</a>
+            </th>
+        </tr>*@
     </thead>
     <tbody>
         @foreach (var item in Model.ParkedVehicles)
@@ -58,18 +69,18 @@
                     </div>
                 </td>
                 <td>
-                        <div class="col-sm-4">
-                        </div>
-                        <div class="col-sm-8">
-                            <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.CheckInTime</a>
-                        </div>
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-8">
+                        <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.CheckInTime</a>
+                    </div>
                 </td>
-                <td>  
-                        <div class="col-sm-4">
-                        </div>
-                        <div class="col-sm-8">
-                            <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.Color</a>
-                        </div>
+                <td>
+                    <div class="col-sm-4">
+                    </div>
+                    <div class="col-sm-8">
+                        <a asp-action="Details" asp-controller="ParkedVehicles" asp-route-id="@item.Id">@item.Color</a>
+                    </div>
                 </td>
             </tr>
         }

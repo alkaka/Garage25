@@ -4,8 +4,34 @@
     ViewData["Title"] = "Delete";
 }
 
+<h3>Check Out Parked Vehicle</h3>
 <div id="print">
 
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @*@Html.DisplayNameFor(model => model.RegNum)*@
+            Registration Number
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RegNum)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Color)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Color)
+        </dd>
+        <dt class="col-sm-2">
+            @*@Html.DisplayNameFor(model => model.CheckInTime)*@
+            Check In Time
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CheckInTime)
+        </dd>
+    </dl>
     <h3>Check Out Parked Vehicle</h3>
     <div>
         <hr />
@@ -40,6 +66,7 @@
 <div>
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Check Out" class="btn btn-danger" /> |
         <input type="submit" value="Check out" class="btn btn-danger" /> |
         <a id="printLink" href="#">Print</a> |
         <a asp-action="Index">Back to List</a>

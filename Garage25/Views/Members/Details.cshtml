@@ -10,7 +10,8 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-4">
-            @Html.DisplayNameFor(model => model.UserName)
+            @*@Html.DisplayNameFor(model => model.UserName)*@
+            <a>User Name</a>
         </dt>
         <dd class="col-sm-8">
             @Html.DisplayFor(model => model.UserName)
@@ -22,7 +23,7 @@
             @Html.DisplayFor(model => model.Email)
         </dd>
         <dt class="col-sm-4">
-            Num Parked Vehicles
+            Number of Parked Vehicles
         </dt>
         <dd class="col-sm-8">
             @Html.DisplayFor(model => model.ParkedVehicles.Count)
@@ -37,13 +38,24 @@
                 Registeration Number
             </th>
             <th>
-                Check in Time
+                Check In Time
             </th>
             <th>
-                Vehicle Color
+                Color
             </th>
             <th></th>
         </tr>
+        @*<tr>
+            <th>
+                <a asp-action="Details2" asp-route-sortOrder="@ViewData["RegNumSortOrder"]">Registeration Number</a>
+            </th>
+            <th>
+                <a asp-action="Details2" asp-route-sortOrder="@ViewData["CheckInTimeSortOrder"]">Check In Time</a>
+            </th>
+            <th>
+                <a asp-action="Details2" asp-route-sortOrder="@ViewData["ColorSortOrder"]">Color</a>
+            </th>
+        </tr>*@
     </thead>
     <tbody>
         @foreach (var item in Model.ParkedVehicles)

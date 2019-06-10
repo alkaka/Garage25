@@ -10,7 +10,8 @@
 <div>
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RegNum)
+            @*@Html.DisplayNameFor(model => model.RegNum)*@
+            Registration Number
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RegNum)
@@ -22,7 +23,8 @@
             @Html.DisplayFor(model => model.Color)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CheckInTime)
+            @*@Html.DisplayNameFor(model => model.CheckInTime)*@
+            Check In Time
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CheckInTime)
@@ -35,7 +37,7 @@
             <a asp-action="Details" asp-controller="Members" asp-route-id="@Model.MemberId">@ViewData["membername"]</a>
         </dd>
         <dt class="col-sm-2">
-            VehicleType
+            Vehicle Type
         </dt>
         <dd class="col-sm-10">
             @ViewData["vehicletypename"]

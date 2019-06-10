@@ -19,5 +19,7 @@ namespace Garage25.Models
         public DbSet<Garage25.Models.Member> Member { get; set; }
 
         public DbSet<Garage25.Models.VehicleType> VehicleType { get; set; }
+
+        public DbSet<Garage25.Models.MemberViewModel> MemberViewModel { get; set; }
     }
 }

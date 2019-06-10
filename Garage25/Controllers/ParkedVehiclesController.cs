@@ -14,6 +14,12 @@ namespace Garage25.Controllers
         RegNum,
         VehicleType
     }
+
+    public enum PV2SearchTerm
+    {
+        RegNum,
+        Color
+    }
     public class ParkedVehiclesController : Controller
     {
         private readonly Garage25Context _context;
@@ -24,19 +30,112 @@ namespace Garage25.Controllers
         }
 
         // GET: ParkedVehicles
-        public async Task<IActionResult> Index2()
+        //public async Task<IActionResult> Index2()
+        //{
+        //    var result = CreateParkedVehicleViewModels();
+
+        //    return View(await result.OrderBy(p => p.RegNum).ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index2(string sortOrder)
         {
             var result = CreateParkedVehicleViewModels();
 
-            return View(await result.OrderBy(p => p.RegNum).ToListAsync());
+            ViewData["RegNumSortOrder"] = string.IsNullOrEmpty(sortOrder) ? "RegNum_desc" : "";
+            ViewData["OwnerSortOrder"] = sortOrder == "Owner" ? "Owner_desc" : "Owner";
+            ViewData["VehicleTypeSortOrder"] = sortOrder == "VehicleType" ? "VehicleType_desc" : "VehicleType";
+            ViewData["ParkingTimeSortOrder"] = sortOrder == "ParkingTime" ? "ParkingTime_desc" : "ParkingTime";
+
+            switch (sortOrder)
+            {
+                case "RegNum_desc":
+                    result = result.OrderByDescending(p => p.RegNum);
+                    TempData["message"] = "Sorting \'Registration Number\' descending";
+                    break;
+                case "Owner":
+                    result = result.OrderBy(p => p.Owner);
+                    TempData["message"] = "Sorting \'Owner\' ascending";
+                    break;
+                case "Owner_desc":
+                    result = result.OrderByDescending(p => p.Owner);
+                    TempData["message"] = "Sorting \'Owner\' descending";
+                    break;
+                case "VehicleType":
+                    result = result.OrderBy(p => p.VehicleType);
+                    TempData["message"] = "Sorting \'VehicleType\' ascending";
+                    break;
+                case "VehicleType_desc":
+                    result = result.OrderByDescending(p => p.VehicleType);
+                    TempData["message"] = "Sorting \'VehicleType\' descending";
+                    break;
+                case "ParkingTime":
+                    result = result.OrderBy(p => p.ParkingTime);
+                    TempData["message"] = "Sorting \'ParkingTime\' ascending";
+                    break;
+                case "ParkingTime_desc":
+                    result = result.OrderByDescending(p => p.ParkingTime);
+                    TempData["message"] = "Sorting \'ParkingTime\' descending";
+                    break;
+                default:
+                    result = result.OrderBy(m => m.RegNum);
+                    if (TempData["message"] == null)
+                        TempData["message"] = "Sorting \'Registration Number\' ascending";
+                    else if (!TempData["message"].ToString().Contains("Vehicle Type"))
+                        TempData["message"] = "Sorting \'Registration Number\' ascending";
+                    break;
+            }
+
+            return View(nameof(Index2), await result.ToListAsync());
         }
 
-        // GET: ParkedVehicles
-        public async Task<IActionResult> Index()
+            // GET: ParkedVehicles
+            //public async Task<IActionResult> Index()
+            //{
+            //    return View(await _context.ParkedVehicle
+            //                            .OrderBy(p => p.RegNum)
+            //                            .ToListAsync());
+            //}
+
+            public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.ParkedVehicle
-                                    .OrderBy(p => p.RegNum)
-                                    .ToListAsync());
+            ViewData["RegNumSortOrder"] = string.IsNullOrEmpty(sortOrder) ? "RegNum_desc" : "";
+            ViewData["ColorSortOrder"] = sortOrder == "Color" ? "Color_desc" : "Color";
+            ViewData["CheckInTimeSortOrder"] = sortOrder == "CheckInTime" ? "CheckInTime_desc" : "CheckInTime";
+
+            IQueryable<ParkedVehicle> result = _context.ParkedVehicle;
+
+            switch (sortOrder)
+            {
+                case "RegNum_desc":
+                    result = result.OrderByDescending(m => m.RegNum);
+                    TempData["message"] = "Sorting \'Registration Number\' descending";
+                    break;
+                case "Color":
+                    result = result.OrderBy(m => m.Color);
+                    TempData["message"] = "Sorting \'Color\' ascending";
+                    break;
+                case "Color_desc":
+                    result = result.OrderByDescending(m => m.Color);
+                    TempData["message"] = "Sorting \'Color\' descending";
+                    break;
+                case "CheckInTime":
+                    result = result.OrderBy(m => m.CheckInTime);
+                    TempData["message"] = "Sorting \'Check In Time\' ascending";
+                    break;
+                case "CheckInTime_desc":
+                    result = result.OrderByDescending(m => m.CheckInTime);
+                    TempData["message"] = "Sorting \'Check In Time\' descending";
+                    break;
+                default:
+                    result = result.OrderBy(m => m.RegNum);
+                    if (TempData["message"] == null)
+                        TempData["message"] = "Sorting \'Registration Number\' ascending";
+                    else if (!TempData["message"].ToString().Contains("Vehicle"))
+                        TempData["message"] = "Sorting \'Registration Number\' ascending";
+                    break;
+            }
+
+            return View(nameof(Index), await result.ToListAsync());
         }
 
         // GET: ParkedVehicles/Details/5
@@ -161,6 +260,9 @@ namespace Garage25.Controllers
 
                 _context.Add(parkedVehicle);
                 await _context.SaveChangesAsync();
+
+                TempData["Message"] = $"Vehicle \'{parkedVehicle.RegNum}\' is checked in";
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -198,7 +300,7 @@ namespace Garage25.Controllers
             {
                 _context.Add(parkedVehicle);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index2));
             }
             return View(parkedVehicle);
         }
@@ -238,6 +340,40 @@ namespace Garage25.Controllers
                                             .ToListAsync());
         }
 
+        public async Task<IActionResult> Filter2(string search, string reset, string searchterm)
+        {
+            IQueryable<ParkedVehicle> result = _context.ParkedVehicle;
+           
+            if (string.IsNullOrWhiteSpace(reset) && !string.IsNullOrWhiteSpace(searchterm))
+            {
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    ViewData["Search"] = search;
+                    ViewData["Select"] = searchterm;
+
+                    //  search = search.ToUpper();
+
+                    switch ((PV2SearchTerm)int.Parse(searchterm))
+                    {
+                        case PV2SearchTerm.RegNum:
+                            result = result.Where(m => m.RegNum.Contains(search, StringComparison.CurrentCultureIgnoreCase));
+                            break;
+                        case PV2SearchTerm.Color:
+                            result = result.Where(m => m.Color.Contains(search, StringComparison.CurrentCultureIgnoreCase));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            //  await UpdateParkedVehicles();
+
+            return View(nameof(Index), await result
+                                            .OrderBy(m => m.RegNum)
+                                            .ToListAsync());
+        }
+
 
 
         // GET: ParkedVehicles/Edit/5
@@ -261,17 +397,25 @@ namespace Garage25.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RegNum,Color")] ParkedVehicle parkedVehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,RegNum,Color,CheckInTime,MemberId,VehicleTypeId")] ParkedVehicle parkedVehicle)
         {
             if (id != parkedVehicle.Id)
             {
                 return NotFound();
             }
 
-            if (await _context.ParkedVehicle.AnyAsync(p => p.RegNum == parkedVehicle.RegNum))
+            // Check RegNum
+            if ( _context.ParkedVehicle.AsNoTracking().Any(p => p.Id == parkedVehicle.Id) &&
+                 _context.ParkedVehicle.AsNoTracking().First(p => p.Id == parkedVehicle.Id).RegNum != parkedVehicle.RegNum &&
+                 _context.ParkedVehicle.AsNoTracking().Any(m => m.RegNum == parkedVehicle.RegNum))
             {
-                ModelState.AddModelError("RegNum", $"\'{parkedVehicle.RegNum}\' already exists");
+                ModelState.AddModelError("RegNum", $"\'{parkedVehicle.RegNum}\' already exists!");
             }
+
+            //if (await _context.ParkedVehicle.AnyAsync(p => p.RegNum == parkedVehicle.RegNum))
+            //{
+            //    ModelState.AddModelError("RegNum", $"\'{parkedVehicle.RegNum}\' already exists");
+            //}
 
             if (ModelState.IsValid)
             {
@@ -291,6 +435,9 @@ namespace Garage25.Controllers
                         throw;
                     }
                 }
+
+                TempData["Message"] = $"Vehicle \'{parkedVehicle.RegNum}\' is updated";
+
                 return RedirectToAction(nameof(Index));
             }
             return View(parkedVehicle);
@@ -330,18 +477,18 @@ namespace Garage25.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CheckOutConfirmed(int id)
         {
-            DateTime now = DateTime.Now;
+        //    DateTime now = DateTime.Now;
             var parkedVehicle = await _context.ParkedVehicle.FindAsync(id);
-            var model = new RecieptViewModel
-            {
-                RegNum = parkedVehicle.RegNum,
-                Color = parkedVehicle.Color,
-                CheckInTime = parkedVehicle.CheckInTime,
-                CheckOutTime = now,
-                TotalTime = now - parkedVehicle.CheckInTime,
-                VehicleType = _context.VehicleType.Any(v => v.Id == parkedVehicle.VehicleTypeId) ?
-                                    _context.VehicleType.First(v => v.Id == parkedVehicle.VehicleTypeId).Name : ""
-            };
+            //var model = new RecieptViewModel
+            //{
+            //    RegNum = parkedVehicle.RegNum,
+            //    Color = parkedVehicle.Color,
+            //    CheckInTime = parkedVehicle.CheckInTime,
+            //    CheckOutTime = now,
+            //    TotalTime = now - parkedVehicle.CheckInTime,
+            //    VehicleType = _context.VehicleType.Any(v => v.Id == parkedVehicle.VehicleTypeId) ?
+            //                        _context.VehicleType.First(v => v.Id == parkedVehicle.VehicleTypeId).Name : ""
+            //};
 
             //var Parkedhours = model.CheckOutTime - model.CheckInTime;
             //model.TotalTime = string.Format("{0:D2}:{1:D2}:{2:D2}", Parkedhours.Days, Parkedhours.Hours, Parkedhours.Minutes);
@@ -349,6 +496,20 @@ namespace Garage25.Controllers
 
             _context.ParkedVehicle.Remove(parkedVehicle);
             await _context.SaveChangesAsync();
+
+            TempData["Message"] = $"Vehicle \'{parkedVehicle.RegNum}\' is checked out";
+
+            var model = new RecieptViewModel
+            {
+                RegNum = parkedVehicle.RegNum,
+                Color = parkedVehicle.Color,
+                CheckInTime = parkedVehicle.CheckInTime,
+                CheckOutTime = DateTime.Now,
+                TotalTime = DateTime.Now - parkedVehicle.CheckInTime,
+                VehicleType = _context.VehicleType.Any(v => v.Id == parkedVehicle.VehicleTypeId) ?
+                                    _context.VehicleType.First(v => v.Id == parkedVehicle.VehicleTypeId).Name : ""
+            };
+
             return View("Reciept", model);
         }
 

@@ -4,13 +4,13 @@
     ViewData["Title"] = "Index2";
 }
 
-<h2 class="text-center">Currently parked vehicle in the garage</h2>
+<h2 class="text-center">Overview</h2>
 <br>
 
 <div class="text-center">
-    <div @*class="text-center" *@ id="checkinButton">
+    @*<div id="checkinButton">
         <a asp-action="Create" value="Check in" class="btn btn-success">Park Vehicle</a>
-    </div>
+    </div>*@
 
     <form asp-action="Filter" id="inputForm">
         <div class="input-group-text">
@@ -21,8 +21,8 @@
                     @{ if (ViewData["Select"] == null)
                         {
                             @*<option value="">Select</option>*@
-                            <option value="0" selected="selected">RegNum</option>
-                            <option value="1">VehicleType</option>
+                            <option value="0" selected="selected">Registration Number</option>
+                            <option value="1">Vehicle Type</option>
                             @*<option value="2" disabled>Start time </option>*@
                         }
                         else
@@ -33,29 +33,29 @@
                             {
                                 case "":
                                     @*<option selected="selected" value="">Select</option>*@
-                                    <option value="0">RegNum</option>
-                                    <option value="1">VehicleType</option>
+                                        <option value="0">Registration Number</option>
+                                        <option value="1">Vehicle Type</option>
                                     @*<option value="2" disabled>Start time</option>*@
                                     break;
 
                                 case "0":
                                     @*<option value="">Select</option>*@
-                                    <option selected="selected" value="0">RegNum</option>
-                                    <option value="1">VehicleType</option>
+                                        <option selected="selected" value="0">Registration Number</option>
+                                        <option value="1">Vehicle Type</option>
                                     @*<option value="2" disabled>Start time</option>*@
                                     break;
 
                                 case "1":
                                     @*<option value="">Select</option>*@
-                                    <option value="0">RegNum</option>
-                                    <option selected="selected" value="1">VehicleType</option>
+                                         <option value="0">Registration Number</option>
+                                         <option selected="selected" value="1">Vehicle Type</option>
                                     @*<option value="2" disabled>Start time</option>*@
                                     break;
 
                                 case "2":
                                     @*<option value="">Select</option>*@
-                                    <option value="0">RegNum</option>
-                                    <option value="1">VehicleType</option>
+                                        <option value="0">Registration Number</option>
+                                        <option value="1">Vehicle Type</option>
                                     @*<option selected="selected" value="2" disabled>Start time</option>*@
                                     break;
 
@@ -76,12 +76,10 @@
     </form>
 </div>
 
-<br>
-
 <table class="table">
     <thead>
         <tr>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.RegNum)
             </th>
             <th>
@@ -93,7 +91,81 @@
             <th>
                 @Html.DisplayNameFor(model => model.ParkingTime)
             </th>
-            <th></th>
+            <th></th>*@
+            <th>
+                @if (ViewData["Search"] != null)
+                {
+                    @*@Html.DisplayNameFor(model => model.RegNum)*@
+                    <a>Registration Number</a>
+                }
+                else
+                {
+                    <a asp-action="Index2" asp-route-sortOrder="@ViewData["RegNumSortOrder"]">Registration Number</a>
+                }
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Owner)
+            </th>*@
+            <th>
+                @if (ViewData["Search"] != null)
+                {
+                    @Html.DisplayNameFor(model => model.Owner)
+                }
+                else
+                {
+                    <a asp-action="Index2" asp-route-sortOrder="@ViewData["OwnerSortOrder"]">@Html.DisplayNameFor(model => model.Owner)</a>
+                }
+            </th>
+            <th>
+                @if (ViewData["Search"] != null)
+                {
+                    @*<a>@Html.DisplayNameFor(model => model.VehicleType)</a>*@
+                    <a>Vehicle Type</a>
+                }
+                else
+                {
+                    <a asp-action="Index2" asp-route-sortOrder="@ViewData["VehicleTypeSortOrder"]">Vehicle Type</a>
+                }
+                @*@Html.DisplayNameFor(model => model.Type)*@
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.ParkingTime)
+            </th>*@
+            <th>
+                @if (ViewData["Search"] != null)
+                {
+                    @*<a>@Html.DisplayNameFor(model => model.ParkingTime)</a>*@
+                    <a>Parking Time</a>
+                }
+                else
+                {
+                    <a asp-action="Index2" asp-route-sortOrder="@ViewData["ParkingTimeSortOrder"]">Parking Time</a>
+                }
+            </th>
+            <th>
+                @if (ViewData["Search"] == null)
+                {
+                    <span class="text-center text-danger" id="messageField"></span>
+                }
+                else if (Model.Count() == 0)
+                {
+                    <span class="text-center text-danger" id="messageField">No match</span>
+                }
+                else if (Model.Count() == 1)
+                {
+                    <span class="text-center text-success" id="messageField">@Model.Count() match</span>
+                }
+                else
+                {
+                    <span class="text-center text-success" id="messageField">@Model.Count() matches</span>
+                }
+
+                @if (TempData["Message"] != null)
+                {
+                    <span class="text-center text-success" id="messageField">@TempData["Message"]</span>
+                }
+            </th>
+
         </tr>
     </thead>
     <tbody>
@@ -112,11 +184,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ParkingTime)
                 </td>
-                <td>
+                @*<td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Check Out Vehicle</a>
-                </td>
+                </td>*@
             </tr>
         }
     </tbody>
