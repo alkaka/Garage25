@@ -60,19 +60,9 @@ namespace Garage25.Data
                 }
                 context.VehicleType.AddRange(vehicletypes);
                 context.SaveChanges();
-
-                string[] colors = { "Black",
-                                    "Blue",
-                                    "Green",
-                                    "Grey",
-                                    "Lila",
-                                    "Magenta",
-                                    "Purple",
-                                    "Red" ,
-                                    "White",
-                                    "Yellow" };
-
                 var vh = new Bogus.DataSets.Vehicle();
+                var color = new Bogus.DataSets.Commerce(locale: "en");
+                TextInfo textInfo = new CultureInfo("en", false).TextInfo;
                 var memberIds = new List<int>();
                 foreach (var member in members)
                 {
@@ -88,16 +78,17 @@ namespace Garage25.Data
                 {
                     foreach (var vehicletype in vehicletypes)
                     {
+                        var vhcol = color.Color();
                         var parkedVehicle = new ParkedVehicle
                         {
-                            RegNum = vh.Vin().Substring(0,6),
-                            Color = colors[random.Next(0,9)],
-                            CheckInTime = DateTime.Now.AddDays(random.Next(-10,0))
-                                                      .AddHours(random.Next(0,24))
-                                                      .AddMinutes(random.Next(0,60))
-                                                      .AddSeconds(random.Next(0,60)),
-                            MemberId = memberIds[random.Next(0,9)],
-                            VehicleTypeId = vehicleTypeIds[random.Next(0,9)],
+                            RegNum = vh.Vin().Substring(0, 6),
+                            Color = textInfo.ToTitleCase(vhcol),
+                            CheckInTime = DateTime.Now.AddDays(random.Next(-10, 0))
+                                                      .AddHours(random.Next(0, 24))
+                                                      .AddMinutes(random.Next(0, 60))
+                                                      .AddSeconds(random.Next(0, 60)),
+                            MemberId = memberIds[random.Next(0, 9)],
+                            VehicleTypeId = vehicleTypeIds[random.Next(0, 9)],
                         };
                         parkedVehicles.Add(parkedVehicle);
                     }
