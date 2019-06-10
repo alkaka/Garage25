@@ -5,8 +5,10 @@
 
 
 
-document.querySelector('#printLink').addEventListener('click', printDiv);
 
+
+// this code for Print option 
+document.querySelector('#printLink').addEventListener('click', printDiv);
 printDivCSS = new String('<link href="myprintstyle.css" rel="stylesheet" type="text/css">');
 function printDiv() {
     let printDiv = document.querySelector('#print').innerHTML;
