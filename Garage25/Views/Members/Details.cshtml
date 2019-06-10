@@ -35,16 +35,27 @@
     <thead>
         <tr>
             <th>
-                Registration Number
+                Registeration Number
             </th>
             <th>
                 Check In Time
             </th>
             <th>
-                Vehicle Color
+                Color
             </th>
             <th></th>
         </tr>
+        @*<tr>
+            <th>
+                <a asp-action="Details2" asp-route-sortOrder="@ViewData["RegNumSortOrder"]">Registeration Number</a>
+            </th>
+            <th>
+                <a asp-action="Details2" asp-route-sortOrder="@ViewData["CheckInTimeSortOrder"]">Check In Time</a>
+            </th>
+            <th>
+                <a asp-action="Details2" asp-route-sortOrder="@ViewData["ColorSortOrder"]">Color</a>
+            </th>
+        </tr>*@
     </thead>
     <tbody>
         @foreach (var item in Model.ParkedVehicles)

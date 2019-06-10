@@ -438,7 +438,7 @@ namespace Garage25.Controllers
 
                 TempData["Message"] = $"Vehicle \'{parkedVehicle.RegNum}\' is updated";
 
-                return RedirectToAction(nameof(Index2));
+                return RedirectToAction(nameof(Index));
             }
             return View(parkedVehicle);
         }

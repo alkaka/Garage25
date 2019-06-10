@@ -138,6 +138,10 @@ namespace Garage25.Controllers
         // GET: Members/Details/5
         public async Task<IActionResult> Details2(int? id)
         {
+            //ViewData["RegNumSortOrder"] = string.IsNullOrEmpty(sortOrder) ? "UserName_desc" : "";
+            //ViewData["ColorSortOrder"] = sortOrder == "Email" ? "Email_desc" : "Email";
+            //ViewData["CheckInTimeSortOrder"] = sortOrder == "NumParkedVehicles" ? "NumParkedVehicles_desc" : "NumParkedVehicles";
+
             if (id == null)
             {
                 return NotFound();
@@ -179,7 +183,7 @@ namespace Garage25.Controllers
 
             if (parkedVehicles != null)
             {
-                detailsMViewModel.ParkedVehicles = await parkedVehicles.ToListAsync<ParkedVehicle>();
+                detailsMViewModel.ParkedVehicles = await parkedVehicles.OrderBy(p => p.RegNum).ToListAsync<ParkedVehicle>();
             }
             
             return View(detailsMViewModel);
