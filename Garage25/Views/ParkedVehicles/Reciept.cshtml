@@ -2,11 +2,11 @@
 @{
     ViewData["Title"] = "Reciept";
 }
-<div>
+
+<div id="print">
     <br>
     <h3>Reciept for Vehicle</h3>
     <hr />
-
     <dl class="row">
         <dt class="col-sm-4">
             @*@Html.DisplayNameFor(model => model.RegNum)*@
@@ -54,6 +54,8 @@
 
 <div>
     <hr>
-    <a href="javascript:window.print()"> Print This Page</a> |
+    <a id="printLink" href="#">Print</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
