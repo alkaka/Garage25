@@ -138,10 +138,6 @@ namespace Garage25.Controllers
         // GET: Members/Details/5
         public async Task<IActionResult> Details2(int? id)
         {
-            //ViewData["RegNumSortOrder"] = string.IsNullOrEmpty(sortOrder) ? "UserName_desc" : "";
-            //ViewData["ColorSortOrder"] = sortOrder == "Email" ? "Email_desc" : "Email";
-            //ViewData["CheckInTimeSortOrder"] = sortOrder == "NumParkedVehicles" ? "NumParkedVehicles_desc" : "NumParkedVehicles";
-
             if (id == null)
             {
                 return NotFound();
@@ -191,7 +187,7 @@ namespace Garage25.Controllers
 
 
         // GET: Members/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string sortOrder)
         {
             if (id == null)
             {
@@ -225,6 +221,41 @@ namespace Garage25.Controllers
 
             if (parkedVehicles != null)
             {
+                ViewData["RegNumSortOrder"] = string.IsNullOrEmpty(sortOrder) ? "RegNum_desc" : "";
+                ViewData["ColorSortOrder"] = sortOrder == "Color" ? "Color_desc" : "Color";
+                ViewData["CheckInTimeSortOrder"] = sortOrder == "CheckInTime" ? "CheckInTime_desc" : "CheckInTime";
+
+                switch (sortOrder)
+                {
+                    case "RegNum_desc":
+                        parkedVehicles = parkedVehicles.OrderByDescending(p => p.RegNum);
+                        TempData["message"] = "Sorting \'Registration Number\' descending";
+                        break;
+                    case "Color":
+                        parkedVehicles = parkedVehicles.OrderBy(p => p.Color);
+                        TempData["message"] = "Sorting \'Color\' ascending";
+                        break;
+                    case "Color_desc":
+                        parkedVehicles = parkedVehicles.OrderByDescending(p => p.Color);
+                        TempData["message"] = "Sorting \'Color\' descending";
+                        break;
+                    case "CheckInTime":
+                        parkedVehicles = parkedVehicles.OrderBy(p => p.CheckInTime);
+                        TempData["message"] = "Sorting \'CheckInTime\' ascending";
+                        break;
+                    case "CheckInTime_desc":
+                        parkedVehicles = parkedVehicles.OrderByDescending(p => p.CheckInTime);
+                        TempData["message"] = "Sorting \'CheckInTime\' descending";
+                        break;
+                    default:
+                        parkedVehicles = parkedVehicles.OrderBy(p => p.RegNum);
+                        if (TempData["message"] == null)
+                            TempData["message"] = "Sorting \'Registration Number\' ascending";
+                        else if (!TempData["message"].ToString().Contains("Member"))
+                            TempData["message"] = "Sorting \'Registration Number\' ascending";
+                        break;
+                }
+
                 member.ParkedVehicles = await parkedVehicles.ToListAsync<ParkedVehicle>();
             }
 

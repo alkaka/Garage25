@@ -76,22 +76,22 @@
     </form>
 </div>
 
-<table class="table">
+<table class="table table-striped table-bordered">
     <thead>
         <tr>
             @*<th>
-                @Html.DisplayNameFor(model => model.RegNum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Owner)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ParkingTime)
-            </th>
-            <th></th>*@
+            @Html.DisplayNameFor(model => model.RegNum)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Owner)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VehicleType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ParkingTime)
+        </th>
+        <th></th>*@
             <th>
                 @if (ViewData["Search"] != null)
                 {
@@ -104,8 +104,8 @@
                 }
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.Owner)
-            </th>*@
+            @Html.DisplayNameFor(model => model.Owner)
+        </th>*@
             <th>
                 @if (ViewData["Search"] != null)
                 {
@@ -129,8 +129,8 @@
                 @*@Html.DisplayNameFor(model => model.Type)*@
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.ParkingTime)
-            </th>*@
+            @Html.DisplayNameFor(model => model.ParkingTime)
+        </th>*@
             <th>
                 @if (ViewData["Search"] != null)
                 {
@@ -165,7 +165,6 @@
                     <span class="text-center text-success" id="messageField">@TempData["Message"]</span>
                 }
             </th>
-
         </tr>
     </thead>
     <tbody>
@@ -184,11 +183,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ParkingTime)
                 </td>
-                @*<td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Check Out Vehicle</a>
-                </td>*@
+                <td>
+                        @*@<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Check Out Vehicle</a>*@
+                </td>
             </tr>
         }
     </tbody>
