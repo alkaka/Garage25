@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Garage25.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,10 +28,7 @@ namespace Garage25.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Type = table.Column<int>(nullable: false),
-                    Brand = table.Column<string>(nullable: true),
-                    Model = table.Column<string>(nullable: true),
-                    NumWheels = table.Column<int>(nullable: false)
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,9 +41,9 @@ namespace Garage25.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    RegNo = table.Column<string>(nullable: true),
+                    RegNum = table.Column<string>(nullable: true),
+                    Color = table.Column<string>(nullable: true),
                     CheckInTime = table.Column<DateTime>(nullable: false),
-                    ParkingTime = table.Column<TimeSpan>(nullable: false),
                     MemberId = table.Column<int>(nullable: false),
                     VehicleTypeId = table.Column<int>(nullable: false)
                 },

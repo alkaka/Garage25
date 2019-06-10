@@ -4,47 +4,173 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Currently parked in the garage</h1>
+<h2 class="text-center">Garage</h2>
+<br>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@*<p>
+        <a asp-action="Create2">Park Vehicle</a>
+    </p>*@
+
+@*<div class="text-center">
+    <div id="checkinButton">
+        <a asp-action="Create2" value="Check in" class="btn btn-success">Check In</a>
+    </div>
+</div>*@
+
+<div class="text-center">
+    @*<div id="createDiv">
+            <button asp-action="Create" type="submit" formmethod="get" value="Check in" class="btn btn-success" id="createButton">Register</button>
+        </div>*@
+
+    <form asp-action="Filter2" id="inputForm">
+        <div class="input-group-text">
+            <button asp-action="Create2" type="submit" formmethod="get" value="Check in" class="btn btn-success" id="createButton">Check In</button>
+            <input name="search" class="form-control" placeholder="Search" id="searchField" value="@ViewData["Search"]" />
+            <div class="input-group-append">
+                <select name="searchterm" @*asp-items="Html.GetEnumSelectList<SearchTerm>()" *@ class="btn btn-primary" id="selectButton">
+
+                    @{ if (ViewData["Select"] == null)
+                        {
+                            @*<option value="">Select</option>*@
+                            <option value="0" selected="selected">Registration Number</option>
+                            <option value="1">Color</option>
+                            @*<option value="2" disabled>Check In Time</option>*@
+                        }
+                        else
+                        {
+                            string select = ViewData["Select"].ToString();
+
+                            switch (select)
+                            {
+                                case "":
+                                    @*<option selected="selected" value="">Select</option>*@
+                                    <option value="0">Registration Number</option>
+                                    <option value="1">Color</option>
+                                    @*<option value="2" disabled>Check In Time</option>*@
+                                    break;
+
+                                case "0":
+                                    @*<option value="">Select</option>*@
+                                    <option selected="selected" value="0">Registration Number</option>
+                                    <option value="1">Color</option>
+                                    @*<option value="2" disabled>Check In Time</option>*@
+                                    break;
+
+                                case "1":
+                                    @*<option value="">Select</option>*@
+                                    <option value="0">Registration Number</option>
+                                    <option selected="selected" value="1">Color</option>
+                                    @*<option value="2" disabled>Check In Time</option>*@
+                                    break;
+
+                                case "2":
+                                    @*<option value="">Select</option>*@
+                                    <option value="0">Registration Number</option>
+                                    <option value="1">Color</option>
+                                    @*<option selected="selected" value="2" disabled>Check In Time</option>*@
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+
+                    }
+
+                </select>
+            </div>
+            <div class="input-group-append">
+                <input type="submit" name="regno" value="Search" class="btn btn-primary" id="searchButton" />
+                <input type="submit" name="reset" value="Reset" class="btn btn-primary" id="resetButton" />
+            </div>
+        </div>
+    </form>
+</div>
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                Registration Number
-                @*@Html.DisplayNameFor(model => model.RegNo)*@
+                @if (ViewData["Search"] != null)
+                {
+                    @*@Html.DisplayNameFor(model => model.RegNum)*@
+                    <a>Registration Number</a>
+                }
+                else
+                {
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["RegNumSortOrder"]">Registration Number</a>
+                }
+                @*<a asp-action="Sort" name="regno" type="submit" value="Registration number" class="btn btn-info">Registration number</a>*@
             </th>
             <th>
-                Check in time
-                @*@Html.DisplayNameFor(model => model.CheckInTime)*@
+                @if (ViewData["Search"] != null)
+                {
+                    <a>@Html.DisplayNameFor(model => model.Color)</a>
+                }
+                else
+                {
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["ColorSortOrder"]">@Html.DisplayNameFor(model => model.Color)</a>
+                }
+                @*@Html.DisplayNameFor(model => model.Type)*@
             </th>
             <th>
-                Parking time
-                @*@Html.DisplayNameFor(model => model.ParkingTime)*@
+                @if (ViewData["Search"] != null)
+                {
+                    @*@Html.DisplayNameFor(model => model.CheckInTime)*@
+                    <a>Check In Time</a>
+                }
+                else
+                {
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["CheckInTimeSortOrder"]">Check In Time</a>
+                }
             </th>
-            <th></th>
+            <th>
+                @if (ViewData["Search"] == null)
+                {
+                    <span class="text-center text-danger" id="messageField"></span>
+                }
+                else if (Model.Count() == 0)
+                {
+                    <span class="text-center text-danger" id="messageField">No match</span>
+                }
+                else if (Model.Count() == 1)
+                {
+                    <span class="text-center text-success" id="messageField">@Model.Count() match</span>
+                }
+                else
+                {
+                    <span class="text-center text-success" id="messageField">@Model.Count() matches</span>
+                }
+
+                @if (TempData["Message"] != null)
+                {
+                    <span class="text-center text-success" id="messageField">@TempData["Message"]</span>
+                }
+            </th>
         </tr>
     </thead>
+
+
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckInTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParkingTime)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegNum)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Color)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckInTime)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Check Out</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

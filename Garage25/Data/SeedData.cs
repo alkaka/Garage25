@@ -36,18 +36,24 @@ namespace Garage25.Data
                 }
                 context.Member.AddRange(members);
 
-                var vh = new Bogus.DataSets.Vehicle();
-                //var textInfo = new CultureInfo("en-us", false).TextInfo;
+                string[] vtypes = { "Airplane",
+                                    "Bicycle",
+                                    "Boat",
+                                    "Bus",
+                                    "Car",
+                                    "Lorry",
+                                    "Moped",
+                                    "Motorcycle" ,
+                                    "Train",
+                                    "Truck" };
+
+                Random random = new Random();
                 var vehicletypes = new List<VehicleType>();
                 for (int i = 0; i < 10; i++)
                 {
                     var vehicletype = new VehicleType
                     {
-                        //Type = textInfo.ToTitleCase(Faker.Company.CatchPhrase())
-                        Type = VType.CAR, // TODO: Fixes with name generator
-                        Brand = vh.Manufacturer(),
-                        Model = vh.Model(),
-                        NumWheels = 4
+                        Name = vtypes[i]
                     };
 
                     vehicletypes.Add(vehicletype);
@@ -55,19 +61,43 @@ namespace Garage25.Data
                 context.VehicleType.AddRange(vehicletypes);
                 context.SaveChanges();
 
+                string[] colors = { "Black",
+                                    "Blue",
+                                    "Green",
+                                    "Grey",
+                                    "Lila",
+                                    "Magenta",
+                                    "Purple",
+                                    "Red" ,
+                                    "White",
+                                    "Yellow" };
+
+                var vh = new Bogus.DataSets.Vehicle();
+                var memberIds = new List<int>();
+                foreach (var member in members)
+                {
+                    memberIds.Add(member.Id);
+                }
+                var vehicleTypeIds = new List<int>();
+                foreach (var vehicletype in vehicletypes)
+                {
+                    vehicleTypeIds.Add(vehicletype.Id);
+                }
                 var parkedVehicles = new List<ParkedVehicle>();
                 foreach (var member in members)
                 {
                     foreach (var vehicletype in vehicletypes)
                     {
-                        DateTime now = DateTime.Now;
                         var parkedVehicle = new ParkedVehicle
                         {
-                            RegNo = vh.Vin().Substring(0,6),
-                            CheckInTime = now,
-                            ParkingTime = DateTime.Now - now,
-                            MemberId = member.Id,
-                            VehicleTypeId = vehicletype.Id
+                            RegNum = vh.Vin().Substring(0,6),
+                            Color = colors[random.Next(0,9)],
+                            CheckInTime = DateTime.Now.AddDays(random.Next(-10,0))
+                                                      .AddHours(random.Next(0,24))
+                                                      .AddMinutes(random.Next(0,60))
+                                                      .AddSeconds(random.Next(0,60)),
+                            MemberId = memberIds[random.Next(0,9)],
+                            VehicleTypeId = vehicleTypeIds[random.Next(0,9)],
                         };
                         parkedVehicles.Add(parkedVehicle);
                     }

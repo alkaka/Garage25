@@ -1,20 +1,19 @@
-﻿@model IEnumerable<Garage25.Models.Member>
+﻿@model IEnumerable<Garage25.Models.ParkedVehicleViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index2";
 }
 
-<h2 class="text-center">Members</h2>
+<h2 class="text-center">Overview</h2>
 <br>
 
 <div class="text-center">
-    @*<div id="createDiv">
-        <button asp-action="Create" type="submit" formmethod="get" value="Check in" class="btn btn-success" id="createButton">Register</button>
+    @*<div id="checkinButton">
+        <a asp-action="Create" value="Check in" class="btn btn-success">Park Vehicle</a>
     </div>*@
 
     <form asp-action="Filter" id="inputForm">
         <div class="input-group-text">
-            <button asp-action="Create" type="submit" formmethod="get" value="Check in" class="btn btn-success" id="createButton">Register</button>
             <input name="search" class="form-control" placeholder="Search" id="searchField" value="@ViewData["Search"]" />
             <div class="input-group-append">
                 <select name="searchterm" @*asp-items="Html.GetEnumSelectList<SearchTerm>()" *@ class="btn btn-primary" id="selectButton">
@@ -22,8 +21,8 @@
                     @{ if (ViewData["Select"] == null)
                         {
                             @*<option value="">Select</option>*@
-                            <option value="0" selected="selected">User Name</option>
-                            <option value="1">Email</option>
+                            <option value="0" selected="selected">Registration Number</option>
+                            <option value="1">Vehicle Type</option>
                             @*<option value="2" disabled>Start time </option>*@
                         }
                         else
@@ -34,29 +33,29 @@
                             {
                                 case "":
                                     @*<option selected="selected" value="">Select</option>*@
-                                    <option value="0">User Name</option>
-                                    <option value="1">Email</option>
+                                        <option value="0">Registration Number</option>
+                                        <option value="1">Vehicle Type</option>
                                     @*<option value="2" disabled>Start time</option>*@
                                     break;
 
                                 case "0":
                                     @*<option value="">Select</option>*@
-                                    <option selected="selected" value="0">User Name</option>
-                                    <option value="1">Email</option>
+                                        <option selected="selected" value="0">Registration Number</option>
+                                        <option value="1">Vehicle Type</option>
                                     @*<option value="2" disabled>Start time</option>*@
                                     break;
 
                                 case "1":
                                     @*<option value="">Select</option>*@
-                                    <option value="0">User Name</option>
-                                    <option selected="selected" value="1">Email</option>
+                                         <option value="0">Registration Number</option>
+                                         <option selected="selected" value="1">Vehicle Type</option>
                                     @*<option value="2" disabled>Start time</option>*@
                                     break;
 
                                 case "2":
                                     @*<option value="">Select</option>*@
-                                    <option value="0">User Name</option>
-                                    <option value="1">Email</option>
+                                        <option value="0">Registration Number</option>
+                                        <option value="1">Vehicle Type</option>
                                     @*<option selected="selected" value="2" disabled>Start time</option>*@
                                     break;
 
@@ -78,63 +77,77 @@
 </div>
 
 <table class="table">
-    @*<thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                Number of Parked Vehicle
-            </th>
-            <th></th>
-        </tr>
-    </thead>*@
-
     <thead>
         <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.RegNum)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Owner)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VehicleType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ParkingTime)
+            </th>
+            <th></th>*@
             <th>
                 @if (ViewData["Search"] != null)
                 {
-                    @*@Html.DisplayNameFor(model => model.UserName)*@
-                    <a>User Name</a>
+                    @*@Html.DisplayNameFor(model => model.RegNum)*@
+                    <a>Registration Number</a>
                 }
                 else
                 {
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["UserNameSortOrder"]">User Name</a>
+                    <a asp-action="Index2" asp-route-sortOrder="@ViewData["RegNumSortOrder"]">Registration Number</a>
                 }
-                @*<a asp-action="Sort" name="regno" type="submit" value="Registration number" class="btn btn-info">Registration number</a>*@
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.Owner)
+            </th>*@
+            <th>
+                @if (ViewData["Search"] != null)
+                {
+                    @Html.DisplayNameFor(model => model.Owner)
+                }
+                else
+                {
+                    <a asp-action="Index2" asp-route-sortOrder="@ViewData["OwnerSortOrder"]">@Html.DisplayNameFor(model => model.Owner)</a>
+                }
             </th>
             <th>
                 @if (ViewData["Search"] != null)
                 {
-                    <a>@Html.DisplayNameFor(model => model.Email)</a>
+                    @*<a>@Html.DisplayNameFor(model => model.VehicleType)</a>*@
+                    <a>Vehicle Type</a>
                 }
                 else
                 {
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["EmailSortOrder"]">@Html.DisplayNameFor(model => model.Email)</a>
+                    <a asp-action="Index2" asp-route-sortOrder="@ViewData["VehicleTypeSortOrder"]">Vehicle Type</a>
                 }
                 @*@Html.DisplayNameFor(model => model.Type)*@
             </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.ParkingTime)
+            </th>*@
             <th>
                 @if (ViewData["Search"] != null)
                 {
-                    <a>Number of Parked Vehicles</a>
+                    @*<a>@Html.DisplayNameFor(model => model.ParkingTime)</a>*@
+                    <a>Parking Time</a>
                 }
                 else
                 {
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NumParkedVehiclesSortOrder"]">Number of Parked Vehicles</a>
+                    <a asp-action="Index2" asp-route-sortOrder="@ViewData["ParkingTimeSortOrder"]">Parking Time</a>
                 }
-                @*<a>Number of Parked Vehicles</a>*@
             </th>
             <th>
                 @if (ViewData["Search"] == null)
                 {
                     <span class="text-center text-danger" id="messageField"></span>
                 }
-                else  if (Model.Count() == 0)
+                else if (Model.Count() == 0)
                 {
                     <span class="text-center text-danger" id="messageField">No match</span>
                 }
@@ -146,33 +159,36 @@
                 {
                     <span class="text-center text-success" id="messageField">@Model.Count() matches</span>
                 }
-           
+
                 @if (TempData["Message"] != null)
                 {
                     <span class="text-center text-success" id="messageField">@TempData["Message"]</span>
                 }
             </th>
+
         </tr>
     </thead>
-
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
+                    @Html.DisplayFor(modelItem => item.RegNum)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Email)
+                    @Html.DisplayFor(modelItem => item.Owner)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ParkedVehicles.Count)
+                    @Html.DisplayFor(modelItem => item.VehicleType)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.ParkingTime)
+                </td>
+                @*<td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Check Out Vehicle</a>
+                </td>*@
             </tr>
         }
     </tbody>

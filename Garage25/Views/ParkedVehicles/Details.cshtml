@@ -4,38 +4,40 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h3>Parked Vehicle Details</h3>
+<hr />
 
 <div>
-    <h4>ParkedVehicle</h4>
-    <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RegNo)
+            @*@Html.DisplayNameFor(model => model.RegNum)*@
+            Registration Number
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RegNo)
+            @Html.DisplayFor(model => model.RegNum)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CheckInTime)
+            @Html.DisplayNameFor(model => model.Color)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Color)
+        </dd>
+        <dt class="col-sm-2">
+            @*@Html.DisplayNameFor(model => model.CheckInTime)*@
+            Check In Time
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CheckInTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ParkingTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ParkingTime)
-        </dd>
-        <dt class="col-sm-2">
             Owner
         </dt>
         <dd class="col-sm-10">
-            @ViewData["membername"]
+            @*@ViewData["membername"]*@
+            <a asp-action="Details" asp-controller="Members" asp-route-id="@Model.MemberId">@ViewData["membername"]</a>
         </dd>
         <dt class="col-sm-2">
-            VehicleType
+            Vehicle Type
         </dt>
         <dd class="col-sm-10">
             @ViewData["vehicletypename"]

@@ -1,7 +1,7 @@
-﻿@model Garage25.Models.Member
+﻿@model Garage25.Models.DetailsMViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Details2";
 }
 
 <h3>Member Details</h3>
@@ -10,8 +10,7 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-4">
-            @*@Html.DisplayNameFor(model => model.UserName)*@
-            <a>User Name</a>
+            @Html.DisplayNameFor(model => model.UserName)
         </dt>
         <dd class="col-sm-8">
             @Html.DisplayFor(model => model.UserName)
@@ -23,7 +22,7 @@
             @Html.DisplayFor(model => model.Email)
         </dd>
         <dt class="col-sm-4">
-            Number of Parked Vehicles
+            Num Parked Vehicles
         </dt>
         <dd class="col-sm-8">
             @Html.DisplayFor(model => model.ParkedVehicles.Count)

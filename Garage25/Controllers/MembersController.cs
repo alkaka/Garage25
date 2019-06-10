@@ -9,6 +9,12 @@ using Garage25.Models;
 
 namespace Garage25.Controllers
 {
+    public enum MSearchTerm
+    {
+        UserName,
+        Email,
+        TimeStamp
+    }
     public class MembersController : Controller
     {
         private readonly Garage25Context _context;
@@ -19,10 +25,170 @@ namespace Garage25.Controllers
         }
 
         // GET: Members
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index2()
+        //{
+        //    IQueryable<SearchMViewModel> result = CreateSearchMViewModels();
+
+        //    return View(nameof(Index2), await result
+        //                                    .OrderBy(m => m.UserName)
+        //                                    .ToListAsync());
+        //}
+
+        //// GET: Members
+        //public async Task<IActionResult> Index()
+        //{
+        //    await UpdateParkedVehicles();
+
+        //    return View(await _context.Member
+        //                    .OrderBy(m => m.UserName)
+        //                    .ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            return View(await _context.Member.ToListAsync());
+            await UpdateParkedVehicles();
+
+            ViewData["UserNameSortOrder"] = string.IsNullOrEmpty(sortOrder) ? "UserName_desc" : "";
+            ViewData["EmailSortOrder"] = sortOrder == "Email" ? "Email_desc" : "Email";
+            ViewData["NumParkedVehiclesSortOrder"] = sortOrder == "NumParkedVehicles" ? "NumParkedVehicles_desc" : "NumParkedVehicles";
+
+            IQueryable<Member> result = _context.Member;
+
+            switch (sortOrder)
+            {
+                case "UserName_desc":
+                    result = result.OrderByDescending(m => m.UserName);
+                    TempData["message"] = "Sorting \'User Name\' descending";
+                    break;
+                case "Email":
+                    result = result.OrderBy(m => m.Email);
+                    TempData["message"] = "Sorting \'Email\' ascending";
+                    break;
+                case "Email_desc":
+                    result = result.OrderByDescending(m => m.Email);
+                    TempData["message"] = "Sorting \'Email\' descending";
+                    break;
+                case "NumParkedVehicles":
+                    result = result.OrderBy(m => m.ParkedVehicles.Count);
+                    TempData["message"] = "Sorting \'Number of Parked Vehicles\' ascending";
+                    break;
+                case "NumParkedVehicles_desc":
+                    result = result.OrderByDescending(m => m.ParkedVehicles.Count);
+                    TempData["message"] = "Sorting \'Number of Parked Vehicles\' descending";
+                    break;
+                default:
+                    result = result.OrderBy(m => m.UserName);
+                    if (TempData["message"] == null)
+                        TempData["message"] = "Sorting \'User Name\' ascending";
+                    else if (!TempData["message"].ToString().Contains("Member"))
+                        TempData["message"] = "Sorting \'User Name\' ascending";
+                    break;
+            }
+
+            return View(nameof(Index), await result.ToListAsync());
         }
+
+        private async Task UpdateParkedVehicles()
+        {
+            foreach (var member in _context.Member)
+            {
+                var parkedVehicles = _context.ParkedVehicle
+                                        .Where(p => p.MemberId == member.Id);
+                if (parkedVehicles != null)
+                    member.ParkedVehicles = await parkedVehicles.ToListAsync();
+            }
+        }
+
+        public async Task<IActionResult> Filter(string search, string reset, string searchterm)
+        {
+            IQueryable<Member> result = _context.Member;
+
+            if (string.IsNullOrWhiteSpace(reset) && !string.IsNullOrWhiteSpace(searchterm))
+            {
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    ViewData["Search"] = search;
+                    ViewData["Select"] = searchterm;
+
+                    search = search.ToUpper();
+
+                    switch ((MSearchTerm)int.Parse(searchterm))
+                    {
+                        case MSearchTerm.UserName:
+                            // result = result.Where(m => m.UserName.Contains(search)); // Seems to work with case
+                            result = result.Where(m => m.UserName.Contains(search, StringComparison.CurrentCultureIgnoreCase));
+                            break;
+                        case MSearchTerm.Email:
+                            // result = result.Where(m => m.Email.Contains(search)); // Seems to work with case
+                            result = result.Where(m => m.Email.Contains(search, StringComparison.CurrentCultureIgnoreCase));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            await UpdateParkedVehicles();
+
+            return View(nameof(Index), await result
+                                            .OrderBy(m => m.UserName)
+                                            .ToListAsync());
+        }
+
+        // GET: Members/Details/5
+        public async Task<IActionResult> Details2(int? id)
+        {
+            //ViewData["RegNumSortOrder"] = string.IsNullOrEmpty(sortOrder) ? "UserName_desc" : "";
+            //ViewData["ColorSortOrder"] = sortOrder == "Email" ? "Email_desc" : "Email";
+            //ViewData["CheckInTimeSortOrder"] = sortOrder == "NumParkedVehicles" ? "NumParkedVehicles_desc" : "NumParkedVehicles";
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var member = await _context.Member
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (member == null)
+            {
+                return NotFound();
+            }
+
+
+            //var parkedVehicles = _context.ParkedVehicle
+            //    .Where(p => p.MemberId == member.Id);
+            
+
+            //if (parkedVehicles == null)
+            //{
+            //    ViewData["numparkedvehicles"] = "0";
+            //}
+            //else
+            //{
+            //    int numParkedVehicles = parkedVehicles.Count();
+
+            //    ViewData["numparkedvehicles"] = numParkedVehicles.ToString();
+            //}
+
+            var detailsMViewModel = new DetailsMViewModel
+            {
+                Id = member.Id,
+                UserName = member.UserName,
+                Email = member.Email,
+                ParkedVehicles = member.ParkedVehicles
+            };
+
+            var parkedVehicles = _context.ParkedVehicle
+               .Where(p => p.MemberId == member.Id);
+
+            if (parkedVehicles != null)
+            {
+                detailsMViewModel.ParkedVehicles = await parkedVehicles.OrderBy(p => p.RegNum).ToListAsync<ParkedVehicle>();
+            }
+            
+            return View(detailsMViewModel);
+        }
+
 
         // GET: Members/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -39,16 +205,28 @@ namespace Garage25.Controllers
                 return NotFound();
             }
 
+            //var parkedVehicles = _context.ParkedVehicle
+            //    .Where(p => p.MemberId == member.Id);
+
+
+            //if (parkedVehicles == null)
+            //{
+            //    ViewData["numparkedvehicles"] = "0";
+            //}
+            //else
+            //{
+            //    int numParkedVehicles = parkedVehicles.Count();
+
+            //    ViewData["numparkedvehicles"] = numParkedVehicles.ToString();
+            //}
+
             var parkedVehicles = _context.ParkedVehicle
-                .Where(p => p.MemberId == member.Id);
-            if (parkedVehicles == null)
+               .Where(p => p.MemberId == member.Id);
+
+            if (parkedVehicles != null)
             {
-                ViewData["numparkedvehicles"] = "0";
+                member.ParkedVehicles = await parkedVehicles.ToListAsync<ParkedVehicle>();
             }
-
-            int numParkedVehicles = parkedVehicles.Count();
-
-            ViewData["numparkedvehicles"] = numParkedVehicles.ToString();
 
             return View(member);
         }
@@ -66,10 +244,15 @@ namespace Garage25.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,UserName,Email")] Member member)
         {
+            await CheckUnique(member);
+
             if (ModelState.IsValid)
             {
                 _context.Add(member);
                 await _context.SaveChangesAsync();
+
+                TempData["Message"] = $"Member \'{member.UserName}\' is registered";
+
                 return RedirectToAction(nameof(Index));
             }
             return View(member);
@@ -103,12 +286,43 @@ namespace Garage25.Controllers
                 return NotFound();
             }
 
+            // Check UserName
+            if (_context.Member.AsNoTracking().First(m => m.Id == member.Id).UserName != member.UserName &&
+                 _context.Member.AsNoTracking().Any(m => m.UserName == member.UserName))
+            {
+                ModelState.AddModelError("UserName", $"\'{member.UserName}\' already exists!");
+            }
+
+            // Check Email
+            if (_context.Member.AsNoTracking().First(m => m.Id == member.Id).Email != member.Email &&
+                 _context.Member.AsNoTracking().Any(m => m.Email == member.Email))
+            {
+                ModelState.AddModelError("Email", $"\'{member.Email}\' already exists!");
+            }
+
+            //// Check UserName
+            //if (await UserNameChangedAsync(member) && await UserNameExistsAsync(member))
+            //{
+            //    ModelState.AddModelError("UserName", $"\'{member.UserName}\' already exists!");
+            //}
+
+            //// Check Email
+            //if (await EmailChangedAsync(member) && await EmailExistsAsync(member))
+            //{
+            //    ModelState.AddModelError("Email", $"\'{member.Email}\' already exists!");
+            //}
+
+            //if (await UserNameChangedAsync(member) || await EmailChangedAsync(member))
+            //{
+            //    await CheckUnique(member);
+            //}
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(member);
-                    await _context.SaveChangesAsync();
+                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,9 +335,45 @@ namespace Garage25.Controllers
                         throw;
                     }
                 }
+
+                TempData["Message"] = $"Member \'{member.UserName}\' is updated";
+
                 return RedirectToAction(nameof(Index));
             }
             return View(member);
+        }
+
+        private async Task<bool> EmailExistsAsync(Member member)
+        {
+            return await _context.Member.AnyAsync(m => m.Email == member.Email);
+        }
+
+        private async Task<bool> UserNameExistsAsync(Member member)
+        {
+            return await _context.Member.AnyAsync(m => m.UserName == member.UserName);
+        }
+
+        private async Task<bool> EmailChangedAsync(Member member)
+        {
+            return (await _context.Member.FirstAsync(m => m.Id == member.Id)).Email != member.Email;
+        }
+
+        private async Task<bool> UserNameChangedAsync(Member member)
+        {
+            return (await _context.Member.FirstAsync(m => m.Id == member.Id)).UserName != member.UserName;
+        }
+
+        private async Task CheckUnique(Member member)
+        {
+            if (await _context.Member.AnyAsync(m => m.UserName == member.UserName))
+            {
+                ModelState.AddModelError("UserName", $"\'{member.UserName}\' already exists!");
+            }
+
+            if (await _context.Member.AnyAsync(m => m.Email == member.Email))
+            {
+                ModelState.AddModelError("Email", $"\'{member.Email}\' already exists!");
+            }
         }
 
         // GET: Members/Delete/5
@@ -152,6 +402,9 @@ namespace Garage25.Controllers
             var member = await _context.Member.FindAsync(id);
             _context.Member.Remove(member);
             await _context.SaveChangesAsync();
+
+            TempData["Message"] = $"Member \'{member.UserName}\' is removed";
+
             return RedirectToAction(nameof(Index));
         }
 

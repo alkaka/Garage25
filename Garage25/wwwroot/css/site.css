@@ -5,7 +5,49 @@ a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
+  
 }
+/*.navbar-nav{
+    display:inline-flex;
+}*/
+/*.nav-link float-right{
+    float:right;
+}*/
+
+.nav-link {
+    font-size: large;
+  //  text-shadow: 1px 1px white;
+    color: black;
+}
+
+nav {
+    margin-top: 40px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    background: rgb(23, 162, 184);
+}
+
+    nav a {
+        transition: 0.3s ease;
+        background: rgb(23, 162, 184);
+        color: white;
+        font-size: 20px;
+        text-decoration: none;
+        border-top: 4px solid transparent;
+        border-bottom: 4px solid transparent;
+        padding: 20px 0;
+        margin: 0 5px;
+        font-size: 17px;
+    }
+
+nav a:hover {
+    border-top: 4px solid white;
+    border-bottom: 4px solid white;
+    background-color: aqua;
+    padding: 6px 0;
+}
+
 
 /* Sticky footer styles
 -------------------------------------------------- */
@@ -46,14 +88,25 @@ body {
   margin-bottom: 60px;
 }
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
+    color: black;
 }
-    /*.footer > container >nav-link{
-        color: #00BFFF;
-    }*/  
+
+/*#createDiv {
+    display: inline-block;
+    margin: 10px;
+}*/
+
+/*#inputForm {
+    display: inline-block;
+}*/
+
+.container >a {
+    color: black;
+}

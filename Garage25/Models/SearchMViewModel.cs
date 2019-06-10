@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Garage25.Models
 {
-    public class Member
+    public class SearchMViewModel
     {
         public int Id { get; set; }
         public string UserName { get; set; }
