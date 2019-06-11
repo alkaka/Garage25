@@ -14,20 +14,20 @@ namespace Garage25.Attributes
             object value, ValidationContext validationContext)
         {
             if (value == null)
-                // throw new ArgumentNullException(value.ToString());
                 return new ValidationResult("value is null");
+                // throw new ArgumentNullException(value.ToString());
 
             if (validationContext == null)
-                // throw new ArgumentNullException(validationContext.ToString());
                 return new ValidationResult("validationContext is null");
+                // throw new ArgumentNullException(validationContext.ToString());
 
             //ParkedVehicle parkedVehicle = (ParkedVehicle)validationContext.ObjectInstance;
             //if (parkedVehicle == null) return ValidationResult.Success;
 
             var context = (Garage25Context)validationContext.GetService(typeof(Garage25Context));
             if (context == null)
-                  // throw new ArgumentNullException(context.ToString());
-                  return new ValidationResult("context is null");
+                return new ValidationResult("context is null");
+                // throw new ArgumentNullException(context.ToString());
 
             switch (validationContext.DisplayName)
             {
