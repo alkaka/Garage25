@@ -13,8 +13,6 @@ namespace Garage25.Attributes
         protected override ValidationResult IsValid(
             object value, ValidationContext validationContext)
         {
-            value = null;
-
             if (value == null)
                 // throw new ArgumentNullException(value.ToString());
                 return new ValidationResult("value is null");
