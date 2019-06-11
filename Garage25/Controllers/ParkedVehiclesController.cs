@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -139,8 +140,7 @@ namespace Garage25.Controllers
         }
 
         // GET: ParkedVehicles/Details/5
-        public async Task<IActionResult> 
-            Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -178,24 +178,15 @@ namespace Garage25.Controllers
         {
             // Add some bogus data
             var vehicle = new Bogus.DataSets.Vehicle();
-
-            // Select random color
-            string[] colors = { "Black",
-                                "Blue",
-                                "Green",
-                                "Grey",
-                                "Lila",
-                                "Magenta",
-                                "Purple",
-                                "Red",
-                                "White",
-                                "Yellow" };
-            Random random = new Random();
+            var color = new Bogus.DataSets.Commerce(locale: "en");
+            TextInfo textInfo = new CultureInfo("en", false).TextInfo;
+            var vhcol = color.Color();
 
             var createPVViewModel = new CreatePVViewModel
             {
+                Id = 0,
                 RegNum = vehicle.Vin().Substring(0, 6),
-                Color = colors[random.Next(0, 9)],
+                Color = textInfo.ToTitleCase(vhcol),
                 UserName = ""
             };
 

@@ -25,9 +25,13 @@ namespace Garage25.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(30);
 
-                    b.Property<string>("UserName");
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(20);
 
                     b.HasKey("Id");
 
@@ -42,11 +46,13 @@ namespace Garage25.Migrations
 
                     b.Property<DateTime>("CheckInTime");
 
-                    b.Property<string>("Color");
+                    b.Property<string>("Color")
+                        .IsRequired();
 
                     b.Property<int>("MemberId");
 
-                    b.Property<string>("RegNum");
+                    b.Property<string>("RegNum")
+                        .IsRequired();
 
                     b.Property<int>("VehicleTypeId");
 
@@ -65,7 +71,9 @@ namespace Garage25.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20);
 
                     b.HasKey("Id");
 
