@@ -8,6 +8,7 @@ namespace Garage25.Models
 {
     public class RecieptViewModel
     {
+        [Display(Name = "Registration Number")]
         public string RegNum { get; set; }
         public string Color { get; set; }
         public string VehicleType { get; set; }

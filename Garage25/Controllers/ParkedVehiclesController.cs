@@ -477,38 +477,35 @@ namespace Garage25.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CheckOutConfirmed(int id)
         {
-        //    DateTime now = DateTime.Now;
+            DateTime now = DateTime.Now;
             var parkedVehicle = await _context.ParkedVehicle.FindAsync(id);
-            //var model = new RecieptViewModel
-            //{
-            //    RegNum = parkedVehicle.RegNum,
-            //    Color = parkedVehicle.Color,
-            //    CheckInTime = parkedVehicle.CheckInTime,
-            //    CheckOutTime = now,
-            //    TotalTime = now - parkedVehicle.CheckInTime,
-            //    VehicleType = _context.VehicleType.Any(v => v.Id == parkedVehicle.VehicleTypeId) ?
-            //                        _context.VehicleType.First(v => v.Id == parkedVehicle.VehicleTypeId).Name : ""
-            //};
-
-            //var Parkedhours = model.CheckOutTime - model.CheckInTime;
-            //model.TotalTime = string.Format("{0:D2}:{1:D2}:{2:D2}", Parkedhours.Days, Parkedhours.Hours, Parkedhours.Minutes);
-            //model.Price = String.Format("{0:F2}", Parkedhours.TotalHours * 10); ;
-
-            _context.ParkedVehicle.Remove(parkedVehicle);
-            await _context.SaveChangesAsync();
-
-            TempData["Message"] = $"Vehicle \'{parkedVehicle.RegNum}\' is checked out";
-
             var model = new RecieptViewModel
             {
                 RegNum = parkedVehicle.RegNum,
                 Color = parkedVehicle.Color,
                 CheckInTime = parkedVehicle.CheckInTime,
-                CheckOutTime = DateTime.Now,
-                TotalTime = DateTime.Now - parkedVehicle.CheckInTime,
+                CheckOutTime = now,
+                TotalTime = now - parkedVehicle.CheckInTime,
                 VehicleType = _context.VehicleType.Any(v => v.Id == parkedVehicle.VehicleTypeId) ?
                                     _context.VehicleType.First(v => v.Id == parkedVehicle.VehicleTypeId).Name : ""
             };
+            _context.ParkedVehicle.Remove(parkedVehicle);
+            await _context.SaveChangesAsync();
+
+            //var Parkedhours = model.CheckOutTime - model.CheckInTime;
+            //model.TotalTime = string.Format("{0:D2}:{1:D2}:{2:D2}", Parkedhours.Days, Parkedhours.Hours, Parkedhours.Minutes);
+            //model.Price = String.Format("{0:F2}", Parkedhours.TotalHours * 10); ;
+            // TempData["Message"] = $"Vehicle \'{parkedVehicle.RegNum}\' is checked out";
+            //var model = new RecieptViewModel
+            //{
+            //    RegNum = parkedVehicle.RegNum,
+            //    Color = parkedVehicle.Color,
+            //    CheckInTime = parkedVehicle.CheckInTime,
+            //    CheckOutTime = DateTime.Now,
+            //    TotalTime = DateTime.Now - parkedVehicle.CheckInTime,
+            //    VehicleType = _context.VehicleType.Any(v => v.Id == parkedVehicle.VehicleTypeId) ?
+            //                        _context.VehicleType.First(v => v.Id == parkedVehicle.VehicleTypeId).Name : ""
+            //};
 
             return View("Reciept", model);
         }
