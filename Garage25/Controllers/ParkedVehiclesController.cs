@@ -139,8 +139,7 @@ namespace Garage25.Controllers
         }
 
         // GET: ParkedVehicles/Details/5
-        public async Task<IActionResult> 
-            Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -194,6 +193,7 @@ namespace Garage25.Controllers
 
             var createPVViewModel = new CreatePVViewModel
             {
+                Id = 0,
                 RegNum = vehicle.Vin().Substring(0, 6),
                 Color = colors[random.Next(0, 9)],
                 UserName = ""
