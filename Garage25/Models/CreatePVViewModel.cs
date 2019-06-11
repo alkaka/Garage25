@@ -9,6 +9,8 @@ namespace Garage25.Models
 {
     public class CreatePVViewModel
     {
+        public int Id { get; set; }
+
         [Unique]
         [Required(ErrorMessage = "The registration number is required.")]
         [RegularExpression("^[a-zA-Z0-9][a-zA-Z0-9]*$", ErrorMessage = "The name must consist of alphanumeric characters.")]

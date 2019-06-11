@@ -13,17 +13,23 @@ namespace Garage25.Attributes
         protected override ValidationResult IsValid(
             object value, ValidationContext validationContext)
         {
+            value = null;
+
             if (value == null)
+                // throw new ArgumentNullException(value.ToString());
                 return new ValidationResult("value is null");
 
             if (validationContext == null)
+                // throw new ArgumentNullException(validationContext.ToString());
                 return new ValidationResult("validationContext is null");
 
             //ParkedVehicle parkedVehicle = (ParkedVehicle)validationContext.ObjectInstance;
             //if (parkedVehicle == null) return ValidationResult.Success;
 
             var context = (Garage25Context)validationContext.GetService(typeof(Garage25Context));
-            if (context == null) return new ValidationResult("context is null");
+            if (context == null)
+                  // throw new ArgumentNullException(context.ToString());
+                  return new ValidationResult("context is null");
 
             switch (validationContext.DisplayName)
             {
@@ -54,8 +60,22 @@ namespace Garage25.Attributes
                             return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
                     break;
                 case "RegNum":
-                    if (context.ParkedVehicle.Any(p => p.RegNum == value.ToString()))
-                        return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
+                    ParkedVehicle vehicle = new ParkedVehicle
+                    {
+                        Id = (validationContext.ObjectInstance is CreatePVViewModel) ?
+                               (validationContext.ObjectInstance as CreatePVViewModel).Id :
+                               (validationContext.ObjectInstance as ParkedVehicle).Id,
+                        RegNum = (validationContext.ObjectInstance is CreatePVViewModel) ?
+                               (validationContext.ObjectInstance as CreatePVViewModel).RegNum :
+                               (validationContext.ObjectInstance as ParkedVehicle).RegNum
+                    };
+
+                    if (vehicle.Id == 0) {
+                        if (context.ParkedVehicle.Any(p => p.RegNum == vehicle.RegNum))
+                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
+                    } else if (context.ParkedVehicle.AsNoTracking().First(p => p.Id == vehicle.Id).RegNum != vehicle.RegNum &&
+                               context.ParkedVehicle.AsNoTracking().Any(p => p.RegNum == vehicle.RegNum))
+                           return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
                     break;
             }
 
