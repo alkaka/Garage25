@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Garage25.Models
 {
-    public class ParkedVehicle
+    public class ParkedVehicle : IValidatableObject
     {
         public int Id { get; set; }
 
@@ -30,5 +30,22 @@ namespace Garage25.Models
         public Member Member { get; set; }
         public int VehicleTypeId { get; set; }
         public VehicleType VehicleType { get; set; }
+
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
+        {
+            // Blue buses are not allowed
+            if (Color.Contains("blue", StringComparison.CurrentCultureIgnoreCase)) {
+                if (Id == 0) {
+                    if (VehicleType.Name.Contains("bus", StringComparison.CurrentCultureIgnoreCase))
+                        yield return new ValidationResult("Blue buses are not allowed", new[] { "Color" });
+                } else {
+                    var context = (Garage25Context)validationContext.GetService(typeof(Garage25Context));
+                    VehicleType vehicleType = context.VehicleType.First(v => v.Id == VehicleTypeId);
+                    if (vehicleType.Name.Contains("bus", StringComparison.CurrentCultureIgnoreCase))
+                        yield return new ValidationResult("Blue buses are not allowed", new[] { "Color" });
+                }
+            } else
+                yield return ValidationResult.Success;
+        }
     }
 }
