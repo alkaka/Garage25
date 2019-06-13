@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.Collections.ObjectModel;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace Garage25.Controllers
 {
@@ -223,44 +224,50 @@ namespace Garage25.Controllers
                 ModelState.AddModelError("TypeName", $"\'{createPVViewModel.TypeName}\' do not exists!");
             }
 
+            Member member = await _context.Member
+                                .FirstOrDefaultAsync(m => m.UserName == createPVViewModel.UserName);
+            if (member == null)
+            {
+                return NotFound();
+            }
+
+            VehicleType vehicleType = await _context.VehicleType
+                            .FirstOrDefaultAsync(v => v.Name == createPVViewModel.TypeName);
+            if (vehicleType == null)
+            {
+                return NotFound();
+            }
+
+            DateTime now = DateTime.Now;
+            ParkedVehicle parkedVehicle = new ParkedVehicle
+            {
+                RegNum = createPVViewModel.RegNum,
+                Color = createPVViewModel.Color,
+                CheckInTime = now,
+                MemberId = member.Id,
+                Member = member,
+                VehicleTypeId = vehicleType.Id,
+                VehicleType = vehicleType
+            };
+
+            //var serviceProvider = _context.GetService<IServiceProvider>();
+            //var items = new Dictionary<object, object>();
+            var validationContext = new ValidationContext(parkedVehicle, null, null);
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(parkedVehicle, validationContext, validationResults, false))
+            {
+                ModelState.AddModelError(validationResults[0].MemberNames.First(), 
+                                         validationResults[0].ErrorMessage);
+            }
+
             if (ModelState.IsValid)
             {
-                Member member = await _context.Member
-                                .FirstOrDefaultAsync(m => m.UserName == createPVViewModel.UserName);
-                if (member == null)
-                {
-                    return NotFound();
-                }
-
-                VehicleType vehicleType = await _context.VehicleType
-                                .FirstOrDefaultAsync(v => v.Name == createPVViewModel.TypeName);
-                if (vehicleType == null)
-                {
-                    return NotFound();
-                }
-
-                DateTime now = DateTime.Now;
-                ParkedVehicle parkedVehicle = new ParkedVehicle
-                {
-                    RegNum = createPVViewModel.RegNum,
-                    Color = createPVViewModel.Color,
-                    CheckInTime = now,
-                    MemberId = member.Id,
-                    Member = member,
-                    VehicleTypeId = vehicleType.Id,
-                    VehicleType = vehicleType
-                };
-
-                //var validationResults = new Collection<ValidationResult>();
-                
-                //Validator.TryValidateObject(parkedVehicle, new ValidationContext(parkedVehicle, null, null), validationResults, true);
-
                 _context.Add(parkedVehicle);
                 await _context.SaveChangesAsync();
 
                 TempData["Message"] = $"Vehicle \'{parkedVehicle.RegNum}\' is checked in";
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));  
             }
 
             ViewData["UserName"] = new SelectList(_context.Member
@@ -271,6 +278,37 @@ namespace Garage25.Controllers
 
             return View(createPVViewModel);
         }
+
+
+        //public class MyContext : DbContext
+        //{
+        //    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        //    {
+        //        var serviceProvider = this.GetService<IServiceProvider>();
+        //        var items = new Dictionary<object, object>();
+
+        //        foreach (var entry in this.ChangeTracker.Entries().Where(e => (e.State == EntityState.Added) || (e.State == EntityState.Modified))
+        //        {
+        //            var entity = entry.Entity;
+        //            var context = new ValidationContext(entity, serviceProvider, items);
+        //            var results = new List<ValidationResult>();
+
+        //            if (Validator.TryValidateObject(entity, context, results, true) == false)
+        //            {
+        //                foreach (var result in results)
+        //                {
+        //                    if (result != ValidationResult.Success)
+        //                    {
+        //                        throw new ValidationException(result.ErrorMessage);
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        return base.SaveChanges(acceptAllChangesOnSuccess);
+        //    }
+        //}
+
 
         // GET: ParkedVehicles/Create
         public IActionResult Create()

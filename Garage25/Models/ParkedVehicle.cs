@@ -33,42 +33,19 @@ namespace Garage25.Models
 
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
-            if (Color.Contains("blue", StringComparison.CurrentCultureIgnoreCase))
-            {
-                var context = (Garage25Context)validationContext.GetService(typeof(Garage25Context));
-                if (context == null) yield return new ValidationResult("context is null");
-
-                VehicleType vehicleType = context.VehicleType.First(v => v.Id == VehicleTypeId);
-                if (vehicleType.Name.Contains("bus", StringComparison.CurrentCultureIgnoreCase))
-                    yield return new ValidationResult("Buses are not allowed to be blue", new[] { "Color" });
-            }
-
-            yield return ValidationResult.Success;
-
-            //var context = (Garage25Context)validationContext.GetService(typeof(Garage25Context));
-            //if (context == null) yield return new ValidationResult("context is null");
-
-            //if (context.ParkedVehicle.Any(p => p.Color.Contains("blue", StringComparison.CurrentCultureIgnoreCase))) {
-            //    ParkedVehicle parkedVehicle = context.ParkedVehicle.First(p => p.Color.Contains("blue", StringComparison.CurrentCultureIgnoreCase));
-            //    VehicleType vehicleType = context.VehicleType.First(v => v.Id == parkedVehicle.VehicleTypeId);
-            //    if (vehicleType.Name.Contains("bus", StringComparison.CurrentCultureIgnoreCase))
-            //        yield return new ValidationResult("Buses are not allowed to be blue", new[] { "Color" });
-            //}
-
-            //if (context.ParkedVehicle.Any(p => string.Equals(p.Color, Color.ToUpper())))
-            //    yield return new ValidationResult("IV: Color entered already exists", new[] {"Color"});
-
-            //if (context.ParkedVehicle.Any(p => string.Equals(p.Make, Make.ToUpper())))
-            //    yield return new ValidationResult("IV: Make entered already exists", new[] { "Make" });
-
-            //if (context.ParkedVehicle.Any(p => string.Equals(p.Model, Model.ToUpper())))
-            //    yield return new ValidationResult("IV: Model entered already exists", new[] { "Model" });
-
-            //if (Type == VehicleType.MOTORCYCLE && NumWheels != 2)
-            //    yield return new ValidationResult("IV: Motorcycle must have two wheels", new[] { "Type", "NumWheels" });
-
-            //if (Type == VehicleType.BOAT && NumWheels != 0)
-            //    yield return new ValidationResult("IV: Boat must have zero wheels", new[] { "Type", "NumWheels" });
+            // Blue buses are not allowed
+            if (Color.Contains("blue", StringComparison.CurrentCultureIgnoreCase)) {
+                if (Id == 0) {
+                    if (VehicleType.Name.Contains("bus", StringComparison.CurrentCultureIgnoreCase))
+                        yield return new ValidationResult("Blue buses are not allowed", new[] { "Color" });
+                } else {
+                    var context = (Garage25Context)validationContext.GetService(typeof(Garage25Context));
+                    VehicleType vehicleType = context.VehicleType.First(v => v.Id == VehicleTypeId);
+                    if (vehicleType.Name.Contains("bus", StringComparison.CurrentCultureIgnoreCase))
+                        yield return new ValidationResult("Blue buses are not allowed", new[] { "Color" });
+                }
+            } else
+                yield return ValidationResult.Success;
         }
     }
 }
