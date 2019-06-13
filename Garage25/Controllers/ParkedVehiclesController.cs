@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.ObjectModel;
 
 namespace Garage25.Controllers
 {
@@ -248,6 +250,10 @@ namespace Garage25.Controllers
                     VehicleTypeId = vehicleType.Id,
                     VehicleType = vehicleType
                 };
+
+                //var validationResults = new Collection<ValidationResult>();
+                
+                //Validator.TryValidateObject(parkedVehicle, new ValidationContext(parkedVehicle, null, null), validationResults, true);
 
                 _context.Add(parkedVehicle);
                 await _context.SaveChangesAsync();
