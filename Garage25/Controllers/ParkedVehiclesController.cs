@@ -209,20 +209,20 @@ namespace Garage25.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create2([Bind("RegNum,Color,UserName,TypeName")] CreatePVViewModel createPVViewModel)
         {
-            if (await _context.ParkedVehicle.AnyAsync(p => p.RegNum == createPVViewModel.RegNum))
-            {
-                ModelState.AddModelError("RegNum", $"\'{createPVViewModel.RegNum}\' already exists!");
-            }
+            //if (await _context.ParkedVehicle.AnyAsync(p => p.RegNum == createPVViewModel.RegNum))
+            //{
+            //    ModelState.AddModelError("RegNum", $"\'{createPVViewModel.RegNum}\' already exists!");
+            //}
 
-            if (!await _context.Member.AnyAsync(m => m.UserName == createPVViewModel.UserName))
-            {
-                ModelState.AddModelError("UserName", $"\'{createPVViewModel.UserName}\' do not exists!");
-            }
+            //if (!await _context.Member.AnyAsync(m => m.UserName == createPVViewModel.UserName))
+            //{
+            //    ModelState.AddModelError("UserName", $"\'{createPVViewModel.UserName}\' do not exists!");
+            //}
 
-            if (!await _context.VehicleType.AnyAsync(v => v.Name == createPVViewModel.TypeName))
-            {
-                ModelState.AddModelError("TypeName", $"\'{createPVViewModel.TypeName}\' do not exists!");
-            }
+            //if (!await _context.VehicleType.AnyAsync(v => v.Name == createPVViewModel.TypeName))
+            //{
+            //    ModelState.AddModelError("TypeName", $"\'{createPVViewModel.TypeName}\' do not exists!");
+            //}
 
             Member member = await _context.Member
                                 .FirstOrDefaultAsync(m => m.UserName == createPVViewModel.UserName);
@@ -250,13 +250,15 @@ namespace Garage25.Controllers
                 VehicleType = vehicleType
             };
 
+            TryValidateModel(parkedVehicle);
+
             //var serviceProvider = _context.GetService<IServiceProvider>();
             //var items = new Dictionary<object, object>();
             var validationContext = new ValidationContext(parkedVehicle, null, null);
             var validationResults = new List<ValidationResult>();
             if (!Validator.TryValidateObject(parkedVehicle, validationContext, validationResults, false))
             {
-                ModelState.AddModelError(validationResults[0].MemberNames.First(), 
+                ModelState.AddModelError(validationResults[0].MemberNames.First(),
                                          validationResults[0].ErrorMessage);
             }
 
