@@ -28,8 +28,16 @@ namespace Garage25
             using (var scope = webHost.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                //Seed
-                SeedData.Initialize(services);
+
+                try
+                {
+                    SeedData.Initialize(services);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex.Message, "Seed failed");
+                }
             }
 
             webHost.Run();
