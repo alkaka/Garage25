@@ -1,4 +1,5 @@
 ﻿using Garage25.Models;
+using Garage25.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,8 @@ namespace Garage25.Controllers
     public class ParkedVehiclesController : Controller
     {
         private readonly Garage25Context _context;
+
+        public object DataAnnnotations { get; private set; }
 
         public ParkedVehiclesController(Garage25Context context)
         {
@@ -250,15 +253,8 @@ namespace Garage25.Controllers
                 VehicleType = vehicleType
             };
 
-           // TryValidateModel(parkedVehicle);
-
-            //var serviceProvider = _context.GetService<IServiceProvider>();
-            //var items = new Dictionary<object, object>();
-            var validationContext = new ValidationContext(parkedVehicle, null, null);
-            var validationResults = new List<ValidationResult>();
-
             // Validate all properties
-            if (!Validator.TryValidateObject(parkedVehicle, validationContext, validationResults, true))
+            if (!DataAnnotationsValidator.TryValidate(parkedVehicle, out ICollection<ValidationResult> validationResults))
             {
                 foreach (var validationResult in validationResults)
                 {
@@ -268,7 +264,7 @@ namespace Garage25.Controllers
             }
 
             // Validate business logic
-            if (!Validator.TryValidateObject(parkedVehicle, validationContext, validationResults, false))
+            if (!ValidatableObjectsValidator.TryValidate(parkedVehicle, out validationResults))
             {
                 foreach (var validationResult in validationResults)
                 {
@@ -277,7 +273,10 @@ namespace Garage25.Controllers
                 }
             }
 
-            // see https://odetocode.com/Blogs/scott/archive/2011/06/29/manual-validation-with-data-annotations.aspx
+            
+
+            // see https://odetocode.com/Blogs/scott/archive/2011/06/29/manual-validation-with-data-annotations.aspx
+
             //public class DataAnnotationsValidator
             //{
             //    public bool TryValidate(object @object, out ICollection<ValidationResult> results)
