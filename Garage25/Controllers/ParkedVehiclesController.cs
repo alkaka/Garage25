@@ -250,17 +250,47 @@ namespace Garage25.Controllers
                 VehicleType = vehicleType
             };
 
-            TryValidateModel(parkedVehicle);
+           // TryValidateModel(parkedVehicle);
 
             //var serviceProvider = _context.GetService<IServiceProvider>();
             //var items = new Dictionary<object, object>();
             var validationContext = new ValidationContext(parkedVehicle, null, null);
             var validationResults = new List<ValidationResult>();
+
+            // Validate all properties
+            if (!Validator.TryValidateObject(parkedVehicle, validationContext, validationResults, true))
+            {
+                foreach (var validationResult in validationResults)
+                {
+                    if (validationResult.MemberNames.Count() > 0)
+                        ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
+                }
+            }
+
+            // Validate business logic
             if (!Validator.TryValidateObject(parkedVehicle, validationContext, validationResults, false))
             {
-                ModelState.AddModelError(validationResults[0].MemberNames.First(),
-                                         validationResults[0].ErrorMessage);
+                foreach (var validationResult in validationResults)
+                {
+                    if (validationResult.MemberNames.Count() > 0)
+                        ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
+                }
             }
+
+            // see https://odetocode.com/Blogs/scott/archive/2011/06/29/manual-validation-with-data-annotations.aspx
+            //public class DataAnnotationsValidator
+            //{
+            //    public bool TryValidate(object @object, out ICollection<ValidationResult> results)
+            //    {
+            //        var context = new ValidationContext(@object, serviceProvider: null, items: null);
+            //        results = new List<ValidationResult>();
+            //        return Validator.TryValidateObject(
+            //            @object, context, results,
+            //            validateAllProperties: true
+            //        );
+            //    }
+            //}
+
 
             if (ModelState.IsValid)
             {
