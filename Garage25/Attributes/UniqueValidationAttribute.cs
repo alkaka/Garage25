@@ -1,6 +1,7 @@
 ﻿using Garage25.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,48 +15,45 @@ namespace Garage25.Attributes
             object value, ValidationContext validationContext)
         {
             if (value == null)
-                return new ValidationResult("value is null");
-                // throw new ArgumentNullException(value.ToString());
+                throw new ArgumentNullException("value");
 
             if (validationContext == null)
-                return new ValidationResult("validationContext is null");
-                // throw new ArgumentNullException(validationContext.ToString());
+                throw new ArgumentNullException("validationContext");
 
             //ParkedVehicle parkedVehicle = (ParkedVehicle)validationContext.ObjectInstance;
             //if (parkedVehicle == null) return ValidationResult.Success;
 
-            var context = (Garage25Context)validationContext.GetService(typeof(Garage25Context));
-            if (context == null)
-                return new ValidationResult("context is null");
-                // throw new ArgumentNullException(context.ToString());
+            var service = (Garage25Context)validationContext.GetService(typeof(Garage25Context));
+            if (service == null)
+                throw new Exception("service");
 
             switch (validationContext.DisplayName)
             {
                 case "Name":
-                    if (context.VehicleType.Any(v => v.Name == value.ToString()))
-                        return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
+                    if (service.VehicleType.Any(v => v.Name == value.ToString()))
+                        return new ValidationResult(string.Format("\'{0}\' is not unique.", value), new[] { "Name" });
                     break;
                 case "UserName":
                     Member member = (Member)validationContext.ObjectInstance;
                     if (member == null)
                         return new ValidationResult("member is null");
                     if (member.Id == 0) {
-                        if (context.Member.Any(m => m.UserName == member.UserName))
-                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
-                    } else if (context.Member.AsNoTracking().First(m => m.Id == member.Id).UserName != member.UserName &&
-                               context.Member.AsNoTracking().Any(m => m.UserName == member.UserName))
-                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
+                        if (service.Member.Any(m => m.UserName == member.UserName))
+                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value), new[] { "UserName" });
+                    } else if (service.Member.AsNoTracking().First(m => m.Id == member.Id).UserName != member.UserName &&
+                               service.Member.AsNoTracking().Any(m => m.UserName == member.UserName))
+                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value), new[] { "UserName" });
                     break;
                 case "Email":
                     member = (Member)validationContext.ObjectInstance;
                     if (member == null)
                         return new ValidationResult("member is null");
                     if (member.Id == 0) {
-                        if (context.Member.Any(m => m.Email == member.Email))
-                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
-                    } else if (context.Member.AsNoTracking().First(m => m.Id == member.Id).Email != member.Email &&
-                               context.Member.AsNoTracking().Any(m => m.Email == member.Email))
-                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
+                        if (service.Member.Any(m => m.Email == member.Email))
+                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value), new[] { "Email" });
+                    } else if (service.Member.AsNoTracking().First(m => m.Id == member.Id).Email != member.Email &&
+                               service.Member.AsNoTracking().Any(m => m.Email == member.Email))
+                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value), new[] { "Email" });
                     break;
                 case "RegNum":
                     ParkedVehicle vehicle = new ParkedVehicle
@@ -69,11 +67,11 @@ namespace Garage25.Attributes
                     };
 
                     if (vehicle.Id == 0) {
-                        if (context.ParkedVehicle.Any(p => p.RegNum == vehicle.RegNum))
-                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
-                    } else if (context.ParkedVehicle.AsNoTracking().First(p => p.Id == vehicle.Id).RegNum != vehicle.RegNum &&
-                               context.ParkedVehicle.AsNoTracking().Any(p => p.RegNum == vehicle.RegNum))
-                           return new ValidationResult(string.Format("\'{0}\' is not unique.", value));
+                        if (service.ParkedVehicle.Any(p => p.RegNum == vehicle.RegNum))
+                            return new ValidationResult(string.Format("\'{0}\' is not unique.", value), new[] { "RegNum" });
+                    } else if (service.ParkedVehicle.AsNoTracking().First(p => p.Id == vehicle.Id).RegNum != vehicle.RegNum &&
+                               service.ParkedVehicle.AsNoTracking().Any(p => p.RegNum == vehicle.RegNum))
+                           return new ValidationResult(string.Format("\'{0}\' is not unique.", value), new[] { "RegNum" });
                     break;
             }
 

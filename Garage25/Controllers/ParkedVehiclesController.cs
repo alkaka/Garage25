@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,11 +30,12 @@ namespace Garage25.Controllers
     {
         private readonly Garage25Context _context;
 
-        public object DataAnnnotations { get; private set; }
+        private readonly IServiceProvider _serviceProvider;
 
-        public ParkedVehiclesController(Garage25Context context)
+        public ParkedVehiclesController(Garage25Context context, IServiceProvider provider)
         {
             _context = context;
+            _serviceProvider = provider;
         }
 
         // GET: ParkedVehicles
@@ -253,27 +255,31 @@ namespace Garage25.Controllers
                 VehicleType = vehicleType
             };
 
-            // Validate all properties
-            if (!DataAnnotationsValidator.TryValidate(parkedVehicle, out ICollection<ValidationResult> validationResults))
-            {
-                foreach (var validationResult in validationResults)
-                {
-                    if (validationResult.MemberNames.Count() > 0)
-                        ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
-                }
-            }
+            //var serviceProvider = _context.GetService<IServiceProvider>();
+            //var items = new Dictionary<object, object>();
+            //var context = new ValidationContext(parkedVehicle, _serviceProvider, items);
+            //var validationResults = new List<ValidationResult>();
 
-            // Validate business logic
-            if (!ValidatableObjectsValidator.TryValidate(parkedVehicle, out validationResults))
-            {
-                foreach (var validationResult in validationResults)
-                {
-                    if (validationResult.MemberNames.Count() > 0)
-                        ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
-                }
-            }
+            //if (!Validator.TryValidateObject(parkedVehicle, context, validationResults, true))
+            //{
+            //    foreach (var validationResult in validationResults)
+            //    {
+            //        if (validationResult.MemberNames.Count() > 0)
+            //            ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
+            //    }
+            //}
 
-            
+            // DataAnnotationsValidator.TryValidateModel(parkedVehicle, this, null);
+            DataAnnotationsValidator.TryValidateModel(parkedVehicle, this, _serviceProvider);
+
+            //if (!DataAnnotationsValidator.TryValidate(parkedVehicle, out ICollection<ValidationResult> validationResults))
+            //{
+            //    foreach (var validationResult in validationResults)
+            //    {
+            //        if (validationResult.MemberNames.Count() > 0)
+            //            ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
+            //    }
+            //}
 
             // see https://odetocode.com/Blogs/scott/archive/2011/06/29/manual-validation-with-data-annotations.aspx
 

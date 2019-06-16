@@ -2,17 +2,30 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Garage25.Validators
 {
     public static class DataAnnotationsValidator
     {
-        public static bool TryValidate(object @object, out ICollection<ValidationResult> results)
+        public static void TryValidateModel(object value, ControllerBase controller, IServiceProvider serviceProvider)
         {
-            var context = new ValidationContext(@object, serviceProvider: null, items: null);
+            if (!TryValidate(value, serviceProvider, out ICollection<ValidationResult> validationResults))
+            {
+                foreach (var validationResult in validationResults)
+                {
+                    if (validationResult.MemberNames.Count() > 0)
+                        controller.ModelState.AddModelError(validationResult.MemberNames.First(), validationResult.ErrorMessage);
+                }
+            }
+        }
+
+        public static bool TryValidate(object value, IServiceProvider serviceProvider, out ICollection<ValidationResult> results)
+        {
+            var items = new Dictionary<object, object>();
+            var context = new ValidationContext(value, serviceProvider: serviceProvider, items: items);
             results = new List<ValidationResult>();
-            return Validator.TryValidateObject(@object, context, results, validateAllProperties: true );
+            return Validator.TryValidateObject(value, context, results, validateAllProperties: true );
         }
     }
 }

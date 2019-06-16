@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Garage25.Models
 {
-    public class CreatePVViewModel
+    public class CreatePVViewModel //: IValidatableObject
     {
         public int Id { get; set; }
         public string RegNum { get; set; }
@@ -38,38 +38,42 @@ namespace Garage25.Models
         //[StringLength(20, MinimumLength = 1, ErrorMessage = "The name must be between 1 and 20 letters.")]
         //public string TypeName { get; set; }
 
+
         //IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         //{
+        //    // Blue buses are not allowed
         //    if (Color.Contains("blue", StringComparison.CurrentCultureIgnoreCase) &&
         //        TypeName.Contains("bus", StringComparison.CurrentCultureIgnoreCase))
         //    {
-        //        yield return new ValidationResult("Buses are not allowed to be blue", new[] { "Color" });
+        //        yield return new ValidationResult("Blue buses are not allowed", new[] { "Color" });
         //    }
-
-        //    yield return ValidationResult.Success;
-
-        //    //CreatePVViewModel createPVViewModel = (CreatePVViewModel)validationContext.ObjectInstance;
-        //    //if (createPVViewModel.Color.Contains("blue", StringComparison.CurrentCultureIgnoreCase) &&
-        //    //    createPVViewModel.TypeName.Contains("bus", StringComparison.CurrentCultureIgnoreCase))
-        //    //{
-        //    //    yield return new ValidationResult("Buses are not allowed to be blue", new[] { "Color" });
-        //    //}
-
-
-        //    //if (context.ParkedVehicle.Any(p => string.Equals(p.Color, Color.ToUpper())))
-        //    //    yield return new ValidationResult("IV: Color entered already exists", new[] {"Color"});
-
-        //    //if (context.ParkedVehicle.Any(p => string.Equals(p.Make, Make.ToUpper())))
-        //    //    yield return new ValidationResult("IV: Make entered already exists", new[] { "Make" });
-
-        //    //if (context.ParkedVehicle.Any(p => string.Equals(p.Model, Model.ToUpper())))
-        //    //    yield return new ValidationResult("IV: Model entered already exists", new[] { "Model" });
-
-        //    //if (Type == VehicleType.MOTORCYCLE && NumWheels != 2)
-        //    //    yield return new ValidationResult("IV: Motorcycle must have two wheels", new[] { "Type", "NumWheels" });
-
-        //    //if (Type == VehicleType.BOAT && NumWheels != 0)
-        //    //    yield return new ValidationResult("IV: Boat must have zero wheels", new[] { "Type", "NumWheels" });
+        //    else
+        //        yield return ValidationResult.Success;
         //}
     }
 }
+
+
+            //    //CreatePVViewModel createPVViewModel = (CreatePVViewModel)validationContext.ObjectInstance;
+            //    //if (createPVViewModel.Color.Contains("blue", StringComparison.CurrentCultureIgnoreCase) &&
+            //    //    createPVViewModel.TypeName.Contains("bus", StringComparison.CurrentCultureIgnoreCase))
+            //    //{
+            //    //    yield return new ValidationResult("Buses are not allowed to be blue", new[] { "Color" });
+            //    //}
+
+
+            //    //if (context.ParkedVehicle.Any(p => string.Equals(p.Color, Color.ToUpper())))
+            //    //    yield return new ValidationResult("IV: Color entered already exists", new[] {"Color"});
+
+            //    //if (context.ParkedVehicle.Any(p => string.Equals(p.Make, Make.ToUpper())))
+            //    //    yield return new ValidationResult("IV: Make entered already exists", new[] { "Make" });
+
+            //    //if (context.ParkedVehicle.Any(p => string.Equals(p.Model, Model.ToUpper())))
+            //    //    yield return new ValidationResult("IV: Model entered already exists", new[] { "Model" });
+
+            //    //if (Type == VehicleType.MOTORCYCLE && NumWheels != 2)
+            //    //    yield return new ValidationResult("IV: Motorcycle must have two wheels", new[] { "Type", "NumWheels" });
+
+            //    //if (Type == VehicleType.BOAT && NumWheels != 0)
+            //    //    yield return new ValidationResult("IV: Boat must have zero wheels", new[] { "Type", "NumWheels" });
+            //}
